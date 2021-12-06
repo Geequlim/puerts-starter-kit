@@ -1,0 +1,15 @@
+{
+	"files.associations": {
+		"*.yaml.txt": "yaml",
+		"*.js.txt": "javascript",
+		"*.meta": "yaml",
+		"*.asset": "yaml"
+	},
+	"files.exclude":
+	{
+		"Library": true,
+		"Logs": true,
+		"Temp": true,
+		"node_modules": true
+	}
+}

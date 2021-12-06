@@ -1,0 +1,33 @@
+{
+	"name": "puerts-starter-kit",
+	"author": "Geequlim",
+	"license": "BSD",
+	"scripts": {
+		"bundle:dev": "webpack --config webpack.config.js --watch --env esbuild=true",
+		"bundle:publish": "webpack --config webpack.config.js --env production=true",
+		"bundle:analyze": "webpack --config webpack.config.js --env production=true analyze=true",
+		"webapi:dev": "webpack --config webpack.config.js --watch --env esbuild=true entry=webapi",
+		"webapi:webapi": "webpack --config webpack.config.js --env production=true entry=webapi",
+		"test:dev": "webpack --config webpack.config.js --watch --env entry=test esbuild=true"
+	},
+	"devDependencies": {
+		"@types/mime": "^2.0.3",
+		"esbuild": "^0.11.12",
+		"esbuild-loader": "^2.12.0",
+		"fork-ts-checker-webpack-plugin": "^6.2.1",
+		"ts-loader": "^8.0.15",
+		"tsconfig-paths-webpack-plugin": "^3.3.0",
+		"typescript": "^4.4.3",
+		"webpack": "^4.46.0",
+		"webpack-bundle-analyzer": "^4.4.0",
+		"webpack-cli": "^4.6.0",
+		"webpack-dev-server": "^3.11.2",
+		"webpackbar": "^5.0.0-3",
+		"source-map-support": "^0.5.19"
+	},
+	"dependencies": {
+		"mime": "^2.5.2",
+		"url-parse": "^1.4.7",
+		"query-string": "^6.13.8"
+	}
+}

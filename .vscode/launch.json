@@ -1,0 +1,32 @@
+{
+	// 使用 IntelliSense 了解相关属性。
+	// 悬停以查看现有属性的描述。
+	// 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Unity Editor",
+			"type": "unity",
+			"path": "${workspaceFolder}/Library/EditorInstance.json",
+			"request": "launch"
+		},
+		{
+			"type": "node",
+			"request": "attach",
+			"name": "调试 TypeScript",
+			"protocol": "auto",
+			"port": 5556,
+			"sourceMapPathOverrides": {
+				"webpack:///./~/*": "${workspaceRoot}/node_modules/*",
+				"webpack:///./*": "${workspaceRoot}/*",
+				"webpack:///*": "*",
+				"webpack-internal:///./*": "${workspaceRoot}/*",
+				"webpack-internal:///./~/*": "${workspaceRoot}/node_modules/*",
+				"webpack-internal:///*": "*",
+				"Assets/StreamingAssets/scripts/webpack:///./~/*": "${workspaceRoot}/node_modules/*",
+				"Assets/StreamingAssets/scripts/webpack:///./*": "${workspaceRoot}/*",
+				"Assets/StreamingAssets/scripts/webpack:///*": "*",
+			}
+		}
+	]
+}
