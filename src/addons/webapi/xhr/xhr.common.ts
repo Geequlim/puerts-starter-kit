@@ -192,9 +192,10 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	private _poll_task_id: number = -1;
 	protected $start_poll() {
 		this.$stop_poll();
+		const tick = this.$tick.bind(this);
 		const tickLoop = () => {
-			this.$tick.bind(this);
 			this._poll_task_id = requestAnimationFrame(tickLoop);
+			tick();
 		};
 		this._poll_task_id = requestAnimationFrame(tickLoop);
 	}

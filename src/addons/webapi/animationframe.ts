@@ -1,29 +1,23 @@
-interface FrameAction {
-	id: number;
-	callback: (now: number) => void;
-}
-
-let actions: FrameAction[] = [];
 let global_action_id = 0;
+let current = new Map<number, (now: number) => void>();
+let next = new Map<number, (now: number) => void>();
 
 function cancelAnimationFrame(handle: number): void {
-	actions = actions.filter(a => a.id !== handle);
+	next.delete(handle);
 }
 
 function requestAnimationFrame(callback: (now: number) => void): number {
-	let action = {
-		callback,
-		id: ++global_action_id,
-	};
-	actions.push(action);
-	return action.id;
+	next.set(++global_action_id, callback);
+	return global_action_id;
 }
 
 function tick(now: number) {
-	let tasks = actions.slice();
-	actions = [];
-	for (const task of tasks) {
-		task.callback(now);
+	let temp = current;
+	current = next;
+	next = temp;
+	next.clear();
+	for (const [_, action] of current) {
+		action(now);
 	}
 }
 
