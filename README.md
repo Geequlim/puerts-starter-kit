@@ -32,9 +32,8 @@
 5. 使用 VSCode 打开该项目，执行以下 npm 命令编译 JavaScript 库
     - `npm run webapi:publish:` 或 `yarn webapi:publish` 编译 WebAPI 兼容库
     - `npm run bundle:dev` 或 `yarn bundle:dev` 启动项目编译服务
-6. 使用 Unity 打开 `Assets/main.unity` 入口场景，点击`重置调试目录` 将脚本目录设置为你的本机目录
 ![](screenshot/start.png)
-7. 点击运行，启动游戏，如果一切顺利可以看到如下的日志，大功告成
+6. 点击运行，启动游戏，如果一切顺利可以看到如下的日志，大功告成
 	```log
 	已启动 JavaScript 虚拟机
 		at new JavaScriptApplication (src/main.ts:23:13 )
@@ -44,6 +43,7 @@
 ### 调试
 - Unity 顺利启动JavaScript项目后可在 VSCode 中按 `F5` 键添加到运行中的调试器，之后便可在 TypeScript 文件中设置断点。
 - 如需要调试启动相关的JavaScript代码，请在入口场景中选中`main`节点，勾选 `Wait For Debugger` 选项框。启动游戏后Unity会等待VSCode调试器连接，此时到VSCode中需要调试地方设置好断点后按`F5`连接调试器。
+- 如需调试远程设备（手机真机调试），则打包前确保点击一次`main.unity -> main`节点属性面板的`重置调试目录`将脚本调试目录设置为你本地目录
 
 ### npm 命令简介
 | 命令  |  功能 |

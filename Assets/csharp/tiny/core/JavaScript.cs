@@ -26,7 +26,10 @@ namespace tiny
 			DontDestroyOnLoad(gameObject);
 			inst = this;
 			// 创建JS虚拟机
-			loader = new JavaScriptLoader(DebuggerRoot);
+			loader = new JavaScriptLoader(
+				System.IO.Path.Combine(Application.streamingAssetsPath, "scripts"),
+				DebuggerRoot
+			);
 			env = new Puerts.JsEnv(loader, DebuggerPort);
 			this.RegisterClasses(env);
 			if (WaitForDebugger)
