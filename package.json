@@ -7,7 +7,7 @@
 		"bundle:publish": "webpack --config webpack.config.js --env production=true",
 		"bundle:analyze": "webpack --config webpack.config.js --env production=true analyze=true",
 		"webapi:dev": "webpack --config webpack.config.js --watch --env esbuild=true entry=webapi",
-		"webapi:webapi": "webpack --config webpack.config.js --env production=true entry=webapi",
+		"webapi:publish": "webpack --config webpack.config.js --env production=true entry=webapi",
 		"test:dev": "webpack --config webpack.config.js --watch --env entry=test esbuild=true"
 	},
 	"devDependencies": {
