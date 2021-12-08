@@ -7,7 +7,7 @@ import UnitTest from './UnitTest';
 export class GameTest {
 	static start() {
 		testStorage();
-		// testWebapiMisc(),
+		testWebapiMisc();
 		testTimer();
 		testXHR();
 		UnitTest.run();

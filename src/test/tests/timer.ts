@@ -8,10 +8,11 @@ export function testTimer() {
 
 	UnitTest.test('setInterval', new Promise<void>((resolve, reject) => {
 		let sum = 0;
-		setInterval(() => {
+		let id = setInterval(() => {
 			sum++;
 			if (sum >= 3) {
 				resolve();
+				clearInterval(id);
 			}
 		}, 100);
 	}), group);
@@ -20,7 +21,7 @@ export function testTimer() {
 		let value = 0;
 		const id = setTimeout(() => value = 100);
 		clearTimeout(id);
-		setTimeout(()=> {
+		setTimeout(() => {
 			if (value === 0) {
 				resolve();
 			} else {
@@ -30,8 +31,8 @@ export function testTimer() {
 	}), group);
 
 	UnitTest.test('定时器传参', new Promise<void>((resolve, reject) => {
-		setTimeout((a: number, b: number)=>{
-			if (a === 1 && b===2) {
+		setTimeout((a: number, b: number) => {
+			if (a === 1 && b === 2) {
 				resolve();
 			} else {
 				reject();
