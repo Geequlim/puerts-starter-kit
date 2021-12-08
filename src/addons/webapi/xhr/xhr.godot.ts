@@ -36,7 +36,7 @@ export class XMLHttpRequestEventTarget extends EventTarget {
 	}
 }
 
-export class XMLHttpRequestUpload extends XMLHttpRequestEventTarget {}
+export class XMLHttpRequestUpload extends XMLHttpRequestEventTarget { }
 
 export enum XMLHttpRequestReadyState {
 	UNSENT,
@@ -127,7 +127,7 @@ export class XMLHttpRequest extends XMLHttpRequestEventTarget {
 	/**
 	 * Cancels any network activity.
 	 */
-	abort(): void {}
+	abort(): void { }
 
 	getAllResponseHeaders(): string { return ""; }
 
@@ -142,7 +142,7 @@ export class XMLHttpRequest extends XMLHttpRequestEventTarget {
 	 *
 	 * Throws an "InvalidAccessError" DOMException if async is false, current global object is a Window object, and the timeout attribute is not zero or the responseType attribute is not the empty string.
 	 */
-	open(method: XMLHttpRequestMethod, url: string, async?: boolean, username?: string | null, password?: string | null): void {}
+	open(method: XMLHttpRequestMethod, url: string, async?: boolean, username?: string | null, password?: string | null): void { }
 
 	/**
 	 * Acts as if the `Content-Type` header value for response is mime. (It does not actually change the header though.)
@@ -159,7 +159,7 @@ export class XMLHttpRequest extends XMLHttpRequestEventTarget {
 	 *
 	 * Throws an "InvalidStateError" DOMException if either state is not opened or the send() flag is set.
 	 */
-	send(body?: BodyInit | null): void {}
+	send(body?: BodyInit | null): void { }
 
 	/**
 	 * Combines a header in author request headers.
@@ -168,7 +168,7 @@ export class XMLHttpRequest extends XMLHttpRequestEventTarget {
 	 *
 	 * Throws a "SyntaxError" DOMException if name is not a header name or if value is not a header value.
 	 */
-	setRequestHeader(name: string, value: string): void {}
+	setRequestHeader(name: string, value: string): void { }
 
 	addEventListener<K extends keyof XMLHttpRequestEventMap>(type: K, listener: (this: XMLHttpRequest, ev: XMLHttpRequestEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void {
 		super.addEventListener(type as any, listener, options);
@@ -188,7 +188,7 @@ import * as querystring from "./thirdpart/querystring/querystring";
 const { ResponseCode, Status, Method } = godot.HTTPClient;
 
 const CRLF = '\r\n';
-const RequestMethodMap: {[key: string]: number } = {
+const RequestMethodMap: { [key: string]: number; } = {
 	"GET": Method.METHOD_GET,
 	"POST": Method.METHOD_POST,
 	"DELETE": Method.METHOD_DELETE,
@@ -213,17 +213,17 @@ interface InternalResponse {
 class GodotXMLHttpRequest extends XMLHttpRequest {
 	readonly client: godot.HTTPClient;
 
-	public get url() : Readonly<IURL> { return this._url; }
-	protected _url : IURL;
+	public get url(): Readonly<IURL> { return this._url; }
+	protected _url: IURL;
 
 	get internal_response(): Readonly<InternalResponse> { return this._internal_response; }
 	protected _internal_response: InternalResponse;
 
 	private _poll_task_id = -1;
 	protected _method: XMLHttpRequestMethod;
-	protected _request_headers: {[key: string]: string} = {};
+	protected _request_headers: { [key: string]: string; } = {};
 	protected _pending_task: InternalRequetTask;
-	protected _loading_task: InternalRequetTask
+	protected _loading_task: InternalRequetTask;
 	protected _connec_start_time: number;
 
 	constructor() {
@@ -272,7 +272,11 @@ class GodotXMLHttpRequest extends XMLHttpRequest {
 
 	protected start_poll() {
 		this.stop_poll();
-		this._poll_task_id = requestAnimationFrame(this.poll.bind(this));
+		const tickLoop = () => {
+			this.poll.bind(this);
+			this._poll_task_id = requestAnimationFrame(tickLoop);
+		};
+		this._poll_task_id = requestAnimationFrame(tickLoop);
 	}
 
 	protected stop_poll() {
@@ -332,7 +336,7 @@ class GodotXMLHttpRequest extends XMLHttpRequest {
 							const header = headers.get(i);
 							this.internal_response.headers_list.push(header);
 							let cidx = header.indexOf(":");
-							this.internal_response.headers[ header.substring(0, cidx) ] = header.substring(cidx + 1).trim();
+							this.internal_response.headers[header.substring(0, cidx)] = header.substring(cidx + 1).trim();
 						}
 						this.readyState = XMLHttpRequestReadyState.HEADERS_RECEIVED;
 					}
@@ -429,7 +433,7 @@ class GodotXMLHttpRequest extends XMLHttpRequest {
 	}
 
 	protected dispatch_event(type: keyof XMLHttpRequestEventTargetEventMap) {
-		let event: Event= undefined;
+		let event: Event = undefined;
 		if (type === 'progress') {
 			event = new ProgressEvent(type, {
 				total: this._loading_task.length,

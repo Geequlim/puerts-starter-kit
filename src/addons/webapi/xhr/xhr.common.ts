@@ -38,7 +38,7 @@ export class XMLHttpRequestEventTarget extends EventTarget {
 	}
 }
 
-export class XMLHttpRequestUpload extends XMLHttpRequestEventTarget {}
+export class XMLHttpRequestUpload extends XMLHttpRequestEventTarget { }
 
 export enum XMLHttpRequestReadyState {
 	UNSENT,
@@ -53,10 +53,10 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 
 	onreadystatechange: ((this: XMLHttpRequestBase, ev: Event) => any) | null;
 
-	public get url() : Readonly<IURL> { return this._url; }
-	protected _url : IURL;
+	public get url(): Readonly<IURL> { return this._url; }
+	protected _url: IURL;
 	protected _method: XMLHttpRequestMethod;
-	protected _request_headers: {[key: string]: string} = {};
+	protected _request_headers: { [key: string]: string; } = {};
 	protected _connect_start_time: number;
 
 	/**
@@ -108,7 +108,7 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	 *
 	 * Throws an "InvalidStateError" DOMException if responseType is not the empty string or "document".
 	 */
-	get responseXML(): string { return null} ;
+	get responseXML(): string { return null; };
 	get status(): HttpStatusCode { return 0; };
 	readonly statusText: string;
 
@@ -135,7 +135,7 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	/**
 	 * Cancels any network activity.
 	 */
-	abort(): void {}
+	abort(): void { }
 
 	getAllResponseHeaders(): string { return ""; }
 
@@ -150,7 +150,7 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	 *
 	 * Throws an "InvalidAccessError" DOMException if async is false, current global object is a Window object, and the timeout attribute is not zero or the responseType attribute is not the empty string.
 	 */
-	open(method: XMLHttpRequestMethod, url: string, async?: boolean, username?: string | null, password?: string | null): void {}
+	open(method: XMLHttpRequestMethod, url: string, async?: boolean, username?: string | null, password?: string | null): void { }
 
 	/**
 	 * Acts as if the `Content-Type` header value for response is mime. (It does not actually change the header though.)
@@ -167,7 +167,7 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	 *
 	 * Throws an "InvalidStateError" DOMException if either state is not opened or the send() flag is set.
 	 */
-	send(body?: BodyInit | null): void {}
+	send(body?: BodyInit | null): void { }
 
 	/**
 	 * Combines a header in author request headers.
@@ -192,7 +192,11 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	private _poll_task_id: number = -1;
 	protected $start_poll() {
 		this.$stop_poll();
-		this._poll_task_id = requestAnimationFrame(this.$tick.bind(this));
+		const tickLoop = () => {
+			this.$tick.bind(this);
+			this._poll_task_id = requestAnimationFrame(tickLoop);
+		};
+		this._poll_task_id = requestAnimationFrame(tickLoop);
 	}
 
 	protected $stop_poll() {
@@ -242,5 +246,5 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 		this.dispatchEvent(event);
 	}
 
-	protected $tick() {}
+	protected $tick() { }
 }
