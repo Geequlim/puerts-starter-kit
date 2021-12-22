@@ -35,6 +35,19 @@ const entries = {
 	},
 };
 
+/** 生成版本信息 */
+class HashGeneratorPlugin {
+	constructor(options) {
+		this.options = options;
+	}
+
+	apply(compiler) {
+		compiler.hooks.afterEmit.tap("HashGenerator", (compilation) => {
+			fs.writeFileSync(this.options.output, JSON.stringify({ hash: compilation.fullHash, time: Date.now() }, undefined, '\t'), 'utf-8');
+		});
+	}
+}
+
 module.exports = (env) => {
 	if (!env) {
 		env = {
@@ -61,7 +74,7 @@ module.exports = (env) => {
 	}
 
 	return ({
-		entry: [ path.join(workspace, entries[env.entry].input) ],
+		entry: [path.join(workspace, entries[env.entry].input)],
 		output: {
 			path: path.join(workspace, entries[env.entry].path),
 			filename: entries[env.entry].filename,
@@ -83,6 +96,7 @@ module.exports = (env) => {
 			]
 		},
 		plugins: [
+			new HashGeneratorPlugin({ output: path.join(entries.bundle.path, 'version.json') }),
 			env.production ? new webpack.DefinePlugin({}) : new (require('webpackbar'))(),
 			env.analyze ? new (require('webpack-bundle-analyzer')).BundleAnalyzerPlugin() : new webpack.DefinePlugin({}),
 			env.circularDetect ? new (require('circular-dependency-plugin'))(require('../tools/circular-dependency')) : new webpack.DefinePlugin({}),
@@ -92,21 +106,24 @@ module.exports = (env) => {
 			}),
 			// ESBuild 不会自动检查TS语法，这里添加相关插件
 			env.esbuild ? new (require('fork-ts-checker-webpack-plugin'))() : new webpack.DefinePlugin({}),
+			new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }),
+			new webpack.SourceMapDevToolPlugin({
+				noSources: !env.production,
+				// sourceRoot: workspace,
+				filename: env.production ? `${entries[env.entry].filename}.map` : undefined
+			})
 		],
+		devtool: false,
 		resolve: {
 			extensions: ['.tsx', '.ts', '.js', 'glsl', 'md', 'txt'],
 			plugins: [
 				new (require('tsconfig-paths-webpack-plugin'))({ configFile: tsConfigFile }),
-			]
+			],
+			fallback: {
+				buffer: require.resolve('buffer'),
+			},
 		},
-		devServer: {
-			hot: true,
-			publicPath: "/libs/bundle",
-			contentBase: workspace,
-			compress: false,
-			port: 3100,
-		},
-		devtool: env.production ? "source-map" : "eval-cheap-module-source-map",
+		// devtool: env.production ? "source-map" : "inline-nosources-cheap-module-source-map",
 		mode: env.production ? "production" : "development",
 		externals,
 	});

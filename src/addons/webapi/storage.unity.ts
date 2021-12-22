@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { System, UnityEngine } from "csharp";
-import { Storage } from './storage'
+import { Storage } from './storage';
 
 class LocalStorage extends Storage {
 	protected $file: string;
@@ -14,6 +14,8 @@ class LocalStorage extends Storage {
 			try {
 				const stream = new System.IO.StreamReader(file);
 				const text = stream.ReadToEnd();
+				stream.Close();
+				stream.Dispose();
 				this._items = JSON.parse(text);
 			} catch (error) {
 				throw new Error("Cannot open storage file " + file);

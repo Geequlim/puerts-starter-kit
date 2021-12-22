@@ -11,7 +11,7 @@ namespace tiny
 		public bool WaitForDebugger = false;
 		public int DebuggerPort = 5556;
 		public string DebuggerRoot = System.IO.Path.Combine(Application.streamingAssetsPath, "scripts");
-		public Puerts.JsEnv env;
+		public Puerts.JsEnv vm;
 		public Action<float> JS_update;
 		public Action<float> JS_fixedUpdate;
 		public Action<float> JS_lateUpdate;
@@ -21,41 +21,39 @@ namespace tiny
 		public static JavaScriptLauncher inst { get; private set; }
 		static JavaScriptLauncher() { }
 
-		protected virtual void StartJavaScript()
+		protected virtual async System.Threading.Tasks.Task StartJavaScript()
 		{
 			DontDestroyOnLoad(gameObject);
 			inst = this;
 			// 创建JS虚拟机
-			loader = new JavaScriptLoader(
-				System.IO.Path.Combine(Application.streamingAssetsPath, "scripts"),
-				DebuggerRoot
-			);
-			env = new Puerts.JsEnv(loader, DebuggerPort);
-			this.RegisterClasses(env);
+			loader = new JavaScriptLoader(DebuggerRoot);
+			vm = new Puerts.JsEnv(loader, DebuggerPort);
+			this.RegisterClasses(vm);
 			if (WaitForDebugger)
 			{
-				env.WaitDebugger();
+				await vm.WaitDebuggerAsync();
 			}
 			// 加载启动JS脚本, 执行脚本 main 函数
-			var javascript_main = env.Eval<JavaScriptMain>("require('bootstrap.js');", loader.GetScriptDebugPath("anonymous"));
+			var javascript_main = vm.Eval<JavaScriptMain>("require('bootstrap.js');", loader.GetScriptDebugPath("bootstrap.js"));
 			javascript_main(this);
 		}
 
-		protected virtual void RegisterClasses(Puerts.JsEnv env)
+		protected virtual void RegisterClasses(Puerts.JsEnv vm)
 		{
-			env.UsingAction<int>();
-			env.UsingAction<float>();
-			env.UsingAction<string>();
-			env.UsingAction<bool>();
-			env.UsingFunc<int>();
-			env.UsingFunc<float>();
-			env.UsingFunc<string>();
-			env.UsingFunc<bool>();
-			env.UsingAction<string, string>();
-			env.UsingAction<Vector3>();
-			env.UsingFunc<Vector3>();
-			env.UsingAction<UnityEngine.SceneManagement.Scene, UnityEngine.SceneManagement.LoadSceneMode>();
-			env.UsingAction<UnityEngine.SceneManagement.Scene, UnityEngine.SceneManagement.Scene>();
+			vm.UsingAction<int>();
+			vm.UsingAction<float>();
+			vm.UsingAction<string>();
+			vm.UsingAction<bool>();
+			vm.UsingFunc<int>();
+			vm.UsingFunc<float>();
+			vm.UsingFunc<string>();
+			vm.UsingFunc<bool>();
+			vm.UsingAction<string, string>();
+			vm.UsingAction<Vector3>();
+			vm.UsingFunc<Vector3>();
+			vm.UsingAction<UnityEngine.SceneManagement.Scene, UnityEngine.SceneManagement.LoadSceneMode>();
+			vm.UsingAction<UnityEngine.SceneManagement.Scene, UnityEngine.SceneManagement.Scene>();
+			vm.UsingAction<UnityEngine.AsyncOperation>();
 		}
 
 		protected void FixedUpdate()
@@ -65,7 +63,7 @@ namespace tiny
 
 		protected void Update()
 		{
-			if (env != null) env.Tick();
+			if (vm != null) vm.Tick();
 			if (JS_update != null) JS_update(Time.unscaledDeltaTime);
 		}
 
@@ -81,9 +79,9 @@ namespace tiny
 			{
 				loader.Close();
 			}
-			if (env != null)
+			if (vm != null)
 			{
-				env.Dispose();
+				vm.Dispose();
 			}
 		}
 	}

@@ -4,10 +4,20 @@ import MIMEType from "./thirdpart/mimetype/mime-type";
 import { XMLHttpRequestReadyState, BodyInit, XMLHttpRequestBase, XMLHttpRequestMethod, XMLHttpRequestEventTargetEventMap, XMLHttpRequestEventTarget, XMLHttpRequestUpload, HttpStatusCode } from "./xhr.common";
 import { UnityEngine, System } from "csharp";
 
+declare module 'csharp' {
+	namespace UnityEngine {
+		namespace Networking {
+			namespace UnityWebRequest {
+				let certificateHandler: CertificateHandler;
+			}
+		}
+	}
+}
+
 class UnityXMLHttpRequest extends XMLHttpRequestBase {
 
-	public get url() : Readonly<IURL> { return this._url; }
-	protected _url : IURL;
+	public get url(): Readonly<IURL> { return this._url; }
+	protected _url: IURL;
 	protected _request: UnityEngine.Networking.UnityWebRequest;
 	// protected _head_request: UnityEngine.Networking.UnityWebRequest;
 	protected _method: XMLHttpRequestMethod;
@@ -109,6 +119,10 @@ class UnityXMLHttpRequest extends XMLHttpRequestBase {
 				this._request = new UnityEngine.Networking.UnityWebRequest(this._url.url, this._method);
 				break;
 		}
+		if (UnityEngine.Networking.UnityWebRequest.certificateHandler) {
+			this._request.disposeCertificateHandlerOnDispose = false;
+			this._request.certificateHandler = UnityEngine.Networking.UnityWebRequest.certificateHandler;
+		}
 		for (let key of Object.getOwnPropertyNames(this._request_headers)) {
 			const value = this._request_headers[key];
 			this._request.SetRequestHeader(key, value);
@@ -189,7 +203,7 @@ class UnityXMLHttpRequest extends XMLHttpRequestBase {
 		} else {
 			this._progress = 1;
 			this.$dispatch_event('progress');
-			this.$dispatch_event('load')
+			this.$dispatch_event('load');
 		}
 		this.$dispatch_event('loadend');
 		this.$stop_poll();
@@ -201,6 +215,8 @@ class UnityXMLHttpRequest extends XMLHttpRequestBase {
 			if (mime.type === 'application' && mime.subtype === 'json') {
 				this.responseType = 'json';
 			} else if (mime.type === 'text') {
+				this.responseType = 'text';
+			} else if (mime.isXML() || mime.isHTML() || mime.isJavaScript()) {
 				this.responseType = 'text';
 			} else {
 				this.responseType = 'arraybuffer';

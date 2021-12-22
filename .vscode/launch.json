@@ -11,21 +11,18 @@
 			"request": "launch"
 		},
 		{
-			"type": "node",
-			"request": "attach",
 			"name": "调试 TypeScript",
-			"protocol": "auto",
 			"port": 5556,
+			"type": "pwa-node",
+			"request": "attach",
+			"protocol": "auto",
+			"pauseForSourceMap": true,
+			"remoteRoot": "${workspaceFolder}/Assets/StreamingAssets/scripts",
 			"sourceMapPathOverrides": {
-				"webpack:///./~/*": "${workspaceRoot}/node_modules/*",
-				"webpack:///./*": "${workspaceRoot}/*",
-				"webpack:///*": "*",
-				"webpack-internal:///./*": "${workspaceRoot}/*",
-				"webpack-internal:///./~/*": "${workspaceRoot}/node_modules/*",
-				"webpack-internal:///*": "*",
-				"Assets/StreamingAssets/scripts/webpack:///./~/*": "${workspaceRoot}/node_modules/*",
-				"Assets/StreamingAssets/scripts/webpack:///./*": "${workspaceRoot}/*",
-				"Assets/StreamingAssets/scripts/webpack:///*": "*",
+				"webpack:///./*": "${workspaceFolder}/*",
+				"webpack:///./~/*": "${workspaceFolder}/node_modules/*",
+				"webpack-internal:///./*": "${workspaceFolder}/*",
+				"webpack-internal:///./~/*": "${workspaceFolder}/node_modules/*",
 			}
 		}
 	]

@@ -1,30 +1,48 @@
 using System.IO;
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+
 
 namespace tiny
 {
+	[Serializable]
+	public class ScriptVersion
+	{
+		public readonly static string VERSION_FILE_NAME = "version.json";
+		public long time;
+		public string hash;
+	}
+
+	public interface IScriptLoader
+	{
+		ScriptVersion version { get; }
+		bool FileExists(string filepath);
+		string ReadFile(string filepath);
+		void Close();
+	}
 
 	public class JavaScriptLoader : Puerts.ILoader
 	{
+		public readonly string scriptPatchDirectory = Path.Combine(Application.persistentDataPath, "patches", "scripts");
 		public string debugRoot { get; private set; }
-		public string localScriptFolder { get; private set; }
+		public List<IScriptLoader> loaders { get; private set; }
 
-		public JavaScriptLoader(string localScriptFolder, string debugRoot)
+		public JavaScriptLoader(string debugRoot)
 		{
 			this.debugRoot = debugRoot;
-			this.localScriptFolder = localScriptFolder;
+			loaders = new List<IScriptLoader>() {
+				new PuertsBuiltinScriptLoader(),
+				new ScriptDirectoryLoader(Path.Combine(UnityEngine.Application.streamingAssetsPath, "scripts")),
+				new ScriptDirectoryLoader(scriptPatchDirectory),
+			};
 		}
 
 		public bool FileExists(string filepath)
 		{
-			if (filepath.StartsWith("puerts/")) return true;
-#if UNITY_EDITOR
-			return System.IO.File.Exists(System.IO.Path.Combine(localScriptFolder, filepath));
-#else
-			return true;
-#endif
+			return this.loaders.Find(loader => loader.FileExists(filepath)) != null;
 		}
+
 		public string GetScriptDebugPath(string filepath)
 		{
 			if (filepath.StartsWith("puerts/"))
@@ -37,15 +55,90 @@ namespace tiny
 		public string ReadFile(string filepath, out string debugpath)
 		{
 			debugpath = GetScriptDebugPath(filepath);
-			if (filepath.StartsWith("puerts/"))
+			IScriptLoader loader = null;
+			for (int i = 0; i < loaders.Count; i++)
 			{
-				var asset = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filepath);
-				return asset.text;
+				if (!loaders[i].FileExists(filepath)) continue;
+				if (loader == null || loader.version.time < loaders[i].version.time)
+				{
+					loader = loaders[i];
+				}
 			}
-			return File.ReadAllText(Path.Combine(localScriptFolder, filepath));
+			return loader.ReadFile(filepath);
 		}
 
-		public void Close() { }
+		public void Close()
+		{
+			for (int i = 0; i < loaders.Count; i++)
+			{
+				loaders[i].Close();
+			}
+		}
 	}
 
+	public class PuertsBuiltinScriptLoader : IScriptLoader
+	{
+		static HashSet<string> DiabledBuitinScripts = new HashSet<string> {
+			"puerts/log.js",
+		};
+
+		public ScriptVersion version { get; private set; }
+
+		public PuertsBuiltinScriptLoader()
+		{
+			version = new ScriptVersion() { time = System.DateTime.Now.ToFileTime(), hash = "" };
+		}
+
+		public bool FileExists(string filepath)
+		{
+			return filepath.StartsWith("puerts/");
+		}
+
+		public string ReadFile(string filepath)
+		{
+			if (DiabledBuitinScripts.Contains(filepath)) return "";
+			var asset = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filepath);
+			return asset.text;
+		}
+
+		public void Close()
+		{
+
+		}
+	}
+
+	public class ScriptDirectoryLoader : IScriptLoader
+	{
+		public string directory { get; private set; }
+		public ScriptVersion version { get; private set; }
+
+		public ScriptDirectoryLoader(string directory)
+		{
+			this.directory = directory;
+			Reload();
+		}
+
+		public bool FileExists(string filepath)
+		{
+			return System.IO.File.Exists(System.IO.Path.Combine(directory, filepath));
+		}
+
+		public string ReadFile(string filepath)
+		{
+			return System.IO.File.ReadAllText(System.IO.Path.Combine(directory, filepath));
+		}
+
+		public void Close()
+		{
+		}
+
+		public void Reload()
+		{
+			var versionFile = System.IO.Path.Combine(directory, ScriptVersion.VERSION_FILE_NAME);
+			if (System.IO.File.Exists(versionFile))
+			{
+				version = JsonUtility.FromJson<ScriptVersion>(System.IO.File.ReadAllText(versionFile));
+			}
+		}
+	}
 }

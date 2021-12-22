@@ -1,23 +1,27 @@
 import { UnityEngine, UnityEditor } from 'csharp';
 import { $typeof } from 'puerts';
-enum LogType {
-	Error = 0,
-	Assert = 1,
-	Warning = 2,
-	Log = 3,
-	Exception = 4
-}
+const LogType = {
+	'error': 0,
+	'assert': 1,
+	'warn': 2,
+	'log': 3,
+	'exception': 4
+};
 
 const scriptResources = new Map<string, UnityEngine.Object>();
 const emptyResources = new UnityEngine.Object();
 const isUnityEditor = UnityEngine.Application.isEditor;
 
-function print(type: LogType, showStack : boolean, ...args: unknown[]) {
+function print(type: keyof typeof LogType, showStack: boolean, ...args: unknown[]) {
 	let message = '';
 	for (let i = 0; i < args.length; i++) {
 		const element = args[i];
 		if (typeof element === 'object' && console.LOG_OBJECT_TO_JSON) {
-			message += JSON.stringify(element);
+			if (element instanceof Error) {
+				message += element.message;
+			} else {
+				message += JSON.stringify(element, undefined, '  ');
+			}
 		} else {
 			message += element;
 		}
@@ -55,28 +59,33 @@ function print(type: LogType, showStack : boolean, ...args: unknown[]) {
 	}
 	message = message.replace(/{/gm, '{{');
 	message = message.replace(/}/gm, '}}');
-	UnityEngine.Debug.LogFormat(type, UnityEngine.LogOption.NoStacktrace, unityLogTarget || emptyResources, message);
+	UnityEngine.Debug.LogFormat(LogType[type], UnityEngine.LogOption.NoStacktrace, unityLogTarget || emptyResources, message);
 }
 
-const ConsoleObject = {
-	log: (...args: unknown[]) => print(LogType.Log, false, ...args),
-	info: (...args: unknown[]) => print(LogType.Log, true, ...args),
-	trace: (...args: unknown[]) => print(LogType.Log, true, ...args),
-	warn: (...args: unknown[]) => print(LogType.Warning, true, ...args),
-	error: (...args: unknown[]) => print(LogType.Error, true, ...args),
-	LOG_OBJECT_TO_JSON: false,
-};
+const globalConsole = (globalThis as unknown)['console'];
 
-if (typeof(console) === 'undefined') {
+if (typeof (globalConsole) === 'undefined') {
 	Object.defineProperty(globalThis, 'console', {
-		value: ConsoleObject,
+		value: {
+			log: (...args: unknown[]) => print('log', false, ...args),
+			info: (...args: unknown[]) => print('log', true, ...args),
+			trace: (...args: unknown[]) => print('log', true, ...args),
+			warn: (...args: unknown[]) => print('warn', true, ...args),
+			error: (...args: unknown[]) => print('error', true, ...args),
+			LOG_OBJECT_TO_JSON: false,
+		},
 		enumerable: true,
 		configurable: true,
 		writable: false
 	});
 } else {
-	let globalConsole = (globalThis as unknown)['console'];
-	for (const key in ConsoleObject) {
-		Object.defineProperty(globalConsole, key, { value: ConsoleObject[key], enumerable: true, configurable: true, writable: typeof(ConsoleObject[key]) !== 'function' });
+	for (const key in LogType) {
+		const func: Function = globalConsole[key];
+		if (typeof func === 'function') {
+			globalConsole[key] = function () {
+				func.apply(globalConsole, arguments);
+				print(key as keyof typeof LogType, key != 'log', ...arguments);
+			};
+		}
 	}
 }

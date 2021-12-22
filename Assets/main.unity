@@ -442,7 +442,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   WaitForDebugger: 0
   DebuggerPort: 5556
-  DebuggerRoot: D:/work/svn/puerts-starter-kit/Assets/StreamingAssets/scripts
+  DebuggerRoot: D:/dev/puerts-starter-kit/Assets/StreamingAssets/scripts
   splash: {fileID: 393375104}
 --- !u!4 &1864516589
 Transform:

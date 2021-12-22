@@ -23,3 +23,6 @@ Assets/StreamingAssets/scripts/
 Assets/StreamingAssets/scripts.meta
 
 UI/obj/
+
+
+yarn.lock

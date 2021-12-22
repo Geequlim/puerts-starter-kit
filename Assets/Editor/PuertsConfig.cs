@@ -9,44 +9,134 @@ using UnityEngine;
 public class ExamplesCfg
 {
 
+	// 生成静态绑定的命名空间
+	static HashSet<string> StaticBindingNamespaces = new HashSet<string>()
+	{
+		"tiny",
+		"tiny.utils",
+		"FairyGUI",
+		"FairyGUI.Utils",
+		"StarkSDKSpace",
+	};
+
+	// 不对 TypeScript 进行暴露的类
+	static Dictionary<string, HashSet<string>> IgnoredClasses = new Dictionary<string, HashSet<string>>()
+	{
+		{
+			"FairyGUI", new HashSet<string>(){
+				"TreeNode",
+				"TreeView",
+			}
+		},
+		{
+			"tiny", new HashSet<string>() {
+				"LightmapedPrefab",
+			}
+		},
+	};
+
+	// 生成静态绑定的类
+	static HashSet<Type> StaticBindingClasses = new HashSet<Type>()
+	{
+		typeof(Array),
+		typeof(List<string>),
+		typeof(Puerts.ArrayBuffer),
+
+		typeof(UnityEngine.Vector2),
+		typeof(UnityEngine.Vector3),
+		typeof(UnityEngine.Vector4),
+		typeof(UnityEngine.Quaternion),
+		typeof(UnityEngine.Color),
+		typeof(UnityEngine.Rect),
+		typeof(UnityEngine.Bounds),
+		typeof(UnityEngine.Ray),
+		typeof(UnityEngine.RaycastHit),
+		typeof(UnityEngine.Matrix4x4),
+
+		typeof(UnityEngine.Time),
+		typeof(UnityEngine.Debug),
+		typeof(UnityEngine.Transform),
+		typeof(UnityEngine.Object),
+		typeof(UnityEngine.GameObject),
+		typeof(UnityEngine.Component),
+		typeof(UnityEngine.Behaviour),
+		typeof(UnityEngine.MonoBehaviour),
+		typeof(UnityEngine.AudioClip),
+		typeof(UnityEngine.ParticleSystem.MainModule),
+		typeof(UnityEngine.AnimationClip),
+		typeof(UnityEngine.Animator),
+		typeof(UnityEngine.AnimationCurve),
+		typeof(UnityEngine.Collider),
+		typeof(UnityEngine.Collision),
+		typeof(UnityEngine.Rigidbody),
+		typeof(UnityEngine.Screen),
+		typeof(UnityEngine.Texture),
+		typeof(UnityEngine.TextAsset),
+		typeof(UnityEngine.SystemInfo),
+		typeof(UnityEngine.Input),
+		typeof(UnityEngine.Mathf),
+		typeof(UnityEngine.Camera),
+		typeof(UnityEngine.ParticleSystem),
+		typeof(UnityEngine.AudioSource),
+		typeof(UnityEngine.AudioListener),
+		typeof(UnityEngine.Physics),
+		typeof(UnityEngine.Application),
+		typeof(UnityEngine.SceneManagement.Scene),
+		typeof(UnityEngine.Networking.UnityWebRequest),
+	};
+
+	// 通过反射向TypeScript暴露的类型
+	static HashSet<Type> ReflectionTypings = new HashSet<Type>()
+	{
+		typeof(IEnumerable<string>),
+		typeof(Dictionary<string, string>),
+		typeof(KeyValuePair<string, string>),
+		typeof(System.Collections.IEnumerator),
+		typeof(Dictionary<string, string>.Enumerator),
+		typeof(IReadOnlyDictionary<string, string>),
+	};
+
 	[Typing]
 	static IEnumerable<Type> Typings
 	{
 		get
 		{
+			var types = new HashSet<Type>(ReflectionTypings);
+			var namespaces = new HashSet<string>() {
+				// 在此添加通过反射对 TypeScript 暴露的命名空间
+				"System",
+				"System.IO",
+				"System.Net",
+				"System.Text",
+				"System.Reflection",
+				"UnityEngine",
+				"UnityEngine.Networking",
+				"UnityEngine.ParticleSystem",
+				"UnityEngine.SceneManagement",
+				"UnityEditor",
+				"ICSharpCode.SharpZipLib",
+				"ICSharpCode.SharpZipLib.Zip",
+				"Tayx.Graphy",
+			};
+			namespaces.UnionWith(StaticBindingNamespaces);
 
-			var types = new List<Type>();
-
-			var namespaces = new HashSet<string>();
-			namespaces.Add("tiny");
-
-			namespaces.Add("System");
-			namespaces.Add("UnityEngine");
-			namespaces.Add("UnityEngine.Networking");
-			namespaces.Add("UnityEngine.ParticleSystem");
-			namespaces.Add("UnityEngine.SceneManagement");
-			namespaces.Add("UnityEditor");
-			namespaces.Add("System.IO");
-			namespaces.Add("System.Net");
-			namespaces.Add("System.Reflection");
-			Dictionary<string, HashSet<string>> ignored = new Dictionary<string, HashSet<string>>();
-			var ignored_classes = new HashSet<string>();
-			ignored_classes.Add("ContextMenuItemAttribute");
-			ignored_classes.Add("HashUnsafeUtilities");
-			ignored_classes.Add("SpookyHash");
-			ignored_classes.Add("ContextMenuItemAttribute");
-			ignored_classes.Add("U");
-			ignored.Add("UnityEngine", ignored_classes);
-			ignored_classes = new HashSet<string>();
-			ignored_classes.Add("ContextMenuItemAttribute");
-			ignored.Add("UnityEditor", ignored_classes);
+			Dictionary<string, HashSet<string>> ignored = new Dictionary<string, HashSet<string>>()
+			{
+				// 添加不生成 Typeing 的类
+			};
+			foreach (var pair in IgnoredClasses)
+			{
+				HashSet<string> classes = null;
+				ignored.TryGetValue(pair.Key, out classes);
+				if (classes == null) classes = new HashSet<string>();
+				classes.UnionWith(pair.Value);
+				ignored[pair.Key] = classes;
+			}
 
 			Dictionary<string, HashSet<string>> registered = new Dictionary<string, HashSet<string>>();
-
 			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
 			{
 				var name = assembly.GetName().Name;
-
 				foreach (var type in assembly.GetTypes())
 				{
 					if (!type.IsPublic) continue;
@@ -71,12 +161,6 @@ public class ExamplesCfg
 					}
 				}
 			}
-			types.Add(typeof(System.Convert));
-			types.Add(typeof(System.Text.Encoding));
-			types.Add(typeof(Dictionary<string, string>));
-			types.Add(typeof(KeyValuePair<string, string>));
-			types.Add(typeof(Dictionary<string, string>.Enumerator));
-
 			return types;
 		}
 	}
@@ -86,21 +170,37 @@ public class ExamplesCfg
 	{
 		get
 		{
-			var types = new List<Type>();
-			var namespaces = new HashSet<string>();
-			namespaces.Add("tiny");
+			var types = new List<Type>(StaticBindingClasses);
+			var namespaces = new HashSet<string>(StaticBindingNamespaces);
 
-			Dictionary<string, HashSet<string>> ignored = new Dictionary<string, HashSet<string>>();
-			var ignored_classes = new HashSet<string>();
-			ignored.Add("game", ignored_classes);
+			Dictionary<string, HashSet<string>> ignored = new Dictionary<string, HashSet<string>>()
+			{
+				// 添加不生成 binding 的类
+				{
+					"FairyGUI", new HashSet<string>(){
+						"UIPackage",
+					}
+				}
+			};
+			foreach (var pair in IgnoredClasses)
+			{
+				HashSet<string> classes = null;
+				ignored.TryGetValue(pair.Key, out classes);
+				if (classes == null) classes = new HashSet<string>();
+				classes.UnionWith(pair.Value);
+				ignored[pair.Key] = classes;
+			}
 
-			ignored_classes = new HashSet<string>();
-			ignored.Add("tiny", ignored_classes);
+			var ignored_assemblys = new HashSet<string>() {
+				"UnityEditor",
+				"Assembly-CSharp-Editor"
+			};
 
 			Dictionary<string, HashSet<string>> registered = new Dictionary<string, HashSet<string>>();
 			foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
 			{
 				var name = assembly.GetName().Name;
+				if (ignored_assemblys.Contains(name)) continue;
 				foreach (var type in assembly.GetTypes())
 				{
 					if (!type.IsPublic) continue;
@@ -124,54 +224,6 @@ public class ExamplesCfg
 					}
 				}
 			}
-
-			types.Add(typeof(Array));
-
-			types.Add(typeof(UnityEngine.Vector2));
-			types.Add(typeof(UnityEngine.Vector3));
-			types.Add(typeof(UnityEngine.Vector4));
-			types.Add(typeof(UnityEngine.Quaternion));
-			types.Add(typeof(UnityEngine.Color));
-			types.Add(typeof(UnityEngine.Rect));
-			types.Add(typeof(UnityEngine.Bounds));
-			types.Add(typeof(UnityEngine.Ray));
-			types.Add(typeof(UnityEngine.RaycastHit));
-			types.Add(typeof(UnityEngine.Matrix4x4));
-
-			types.Add(typeof(UnityEngine.Debug));
-			types.Add(typeof(UnityEngine.Time));
-			types.Add(typeof(UnityEngine.Transform));
-			types.Add(typeof(UnityEngine.Object));
-			types.Add(typeof(UnityEngine.GameObject));
-			types.Add(typeof(UnityEngine.Component));
-			types.Add(typeof(UnityEngine.Behaviour));
-			types.Add(typeof(UnityEngine.MonoBehaviour));
-			types.Add(typeof(UnityEngine.AudioClip));
-			types.Add(typeof(UnityEngine.ParticleSystem.MainModule));
-			types.Add(typeof(UnityEngine.AnimationClip));
-			types.Add(typeof(UnityEngine.Animator));
-			types.Add(typeof(UnityEngine.AnimationCurve));
-			types.Add(typeof(UnityEngine.AndroidJNI));
-			types.Add(typeof(UnityEngine.AndroidJNIHelper));
-			types.Add(typeof(UnityEngine.Collider));
-			types.Add(typeof(UnityEngine.Collision));
-			types.Add(typeof(UnityEngine.Rigidbody));
-			types.Add(typeof(UnityEngine.Screen));
-			types.Add(typeof(UnityEngine.Texture));
-			types.Add(typeof(UnityEngine.TextAsset));
-			types.Add(typeof(UnityEngine.SystemInfo));
-			types.Add(typeof(UnityEngine.Input));
-			types.Add(typeof(UnityEngine.Mathf));
-
-			types.Add(typeof(UnityEngine.Camera));
-			types.Add(typeof(UnityEngine.ParticleSystem));
-			types.Add(typeof(UnityEngine.AudioSource));
-			types.Add(typeof(UnityEngine.AudioListener));
-			types.Add(typeof(UnityEngine.Physics));
-			types.Add(typeof(UnityEngine.Application));
-			types.Add(typeof(UnityEngine.SceneManagement.Scene));
-			types.Add(typeof(UnityEngine.Networking.UnityWebRequest));
-
 			return types;
 		}
 	}
@@ -180,15 +232,18 @@ public class ExamplesCfg
 	static bool Filter(MemberInfo memberInfo)
 	{
 		string sig = memberInfo.ToString();
+		if (sig.Contains("*")) return true;
+
 		string name = memberInfo.Name;
 		string className = memberInfo.ReflectedType.FullName;
-		if (className == "UnityEngine.MonoBehaviour" && name == "runInEditMode") return true;
-		if (className == "UnityEngine.Input" && name == "IsJoystickPreconfigured") return true;
-		if (className == "UnityEngine.Texture" && name == "imageContentsHash") return true;
-		if (sig.Contains("*"))
-		{
-			return true;
-		}
+		var skips = new Dictionary<string, HashSet<string>>(){
+			{ "UnityEngine.MonoBehaviour", new HashSet<string>() { "runInEditMode" } },
+			{ "UnityEngine.Input", new HashSet<string>() { "IsJoystickPreconfigured" } },
+			{ "UnityEngine.Texture", new HashSet<string>() { "imageContentsHash" } },
+			{ "tiny.Utils", new HashSet<string>() { "GetAssetDependencies" }},
+		};
+		if (skips.ContainsKey(className) && skips[className].Contains(name)) return true;
+
 		return false;
 	}
 
