@@ -8,6 +8,7 @@
 - 使用 Webpack 构建脚本，开发模式下默认使用[ESBuild](https://github.com/evanw/esbuild)加速代码编译
 - 发布代码时混淆压缩支持
 - 配置好 SourceMap 和 VSCode 调试支持, 开箱即用
+
 ### 必备知识
 - Unity 基础操作
 - TypeScript/JavaScript 语言
@@ -16,24 +17,21 @@
 ### 如何使用
 
 0. 确保已安装如下所需的开发工具
-- NodeJS
-- Visual Studio Code
-- Unity 2019.4.8f1 (其他版本未测试)
+	- NodeJS 16+
+	- Visual Studio Code
+	- Unity 2019.4.8f1 及以后版本
 1. 克隆该项目，项目结构如下
     - `src` TypeScript 脚本目录
-    - `csharp` C# 代码目录
-    	- `csharp/Libraries` C# 源码库目录
-    - `Assets/Editor/PuertsConfig.cs` puerts 导出配置
     - `Assets/main.unity` 入口场景
     - `Assets/StreamingAssets/scripts` 编译生成的 JavaScript 脚本
-2. [下载 puerts 的二进制库](https://github.com/Tencent/puerts/releases)，并解压到`Assets`目录下
-3. 使用Unity打开项目，执行菜单中的`Puerts -> Generate index.d.ts` 导出 C# API
-4. 安装依赖：进入项目目录执行 `npm install` 或 `yarn install`，国内推荐设置淘宝镜像
-5. 使用 VSCode 打开该项目，执行以下 npm 命令编译 JavaScript 库
+    - `Assets/Scripts/Editor/PuertsConfig.cs` puerts 导出配置
+2. 使用Unity打开项目，执行菜单中的`Puerts -> Generate index.d.ts` 导出 C# API, 注意使用 require 模式
+3. 安装依赖：进入项目目录执行 `npm install` 或 `yarn install`，国内推荐设置淘宝镜像
+4. 使用 VSCode 打开该项目，执行以下 npm 命令编译 JavaScript 库
     - `npm run webapi:publish:` 或 `yarn webapi:publish` 编译 WebAPI 兼容库
     - `npm run bundle:dev` 或 `yarn bundle:dev` 启动项目编译服务
 ![](screenshot/start.png)
-6. 点击运行，启动游戏，如果一切顺利可以看到如下的日志，大功告成
+5. 点击运行，启动游戏，如果一切顺利可以看到如下的日志，大功告成
 	```log
 	已启动 JavaScript 虚拟机
 		at new JavaScriptApplication (src/main.ts:23:13 )
@@ -69,8 +67,5 @@
 - 如何加载远程脚本，热更新脚本？
 	- 实现 JavaScriptLoader 对应的接口
 - 如何配置 C# 导出的接口
-	- 修改 `Assets/Editor/PuertsConfig.cs` 文件
-- 如何更新 puerts？
-	- 将 puerts 的 Unity 代码复制到 `Assets/csharp/Libraries/Puerts` 目录内
-	- [下载 puerts 的二进制库](https://github.com/Tencent/puerts/releases)，并解压到`Assets`目录内
+	- 修改 `Assets/Scripts/Editor/PuertsConfig.cs` 文件
 - [puerts 的 Unity 文档](，[参考文档](https://github.com/Tencent/puerts/blob/master/doc/unity/manual.md))
