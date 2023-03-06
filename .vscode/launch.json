@@ -13,16 +13,15 @@
 		{
 			"name": "调试 TypeScript",
 			"port": 5556,
-			"type": "pwa-node",
+			"type": "node",
 			"request": "attach",
-			"protocol": "auto",
 			"pauseForSourceMap": true,
 			"remoteRoot": "${workspaceFolder}/Assets/StreamingAssets/scripts",
 			"sourceMapPathOverrides": {
 				"webpack:///./*": "${workspaceFolder}/*",
 				"webpack:///./~/*": "${workspaceFolder}/node_modules/*",
 				"webpack-internal:///./*": "${workspaceFolder}/*",
-				"webpack-internal:///./~/*": "${workspaceFolder}/node_modules/*",
+				"webpack-internal:///./~/*": "${workspaceFolder}/node_modules/*"
 			}
 		}
 	]

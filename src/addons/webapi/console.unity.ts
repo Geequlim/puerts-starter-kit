@@ -1,5 +1,5 @@
-import { UnityEngine, UnityEditor } from 'csharp';
-import { $typeof } from 'puerts';
+/* eslint-disable prefer-rest-params */
+import { UnityEngine } from 'csharp';
 const LogType = {
 	'error': 0,
 	'assert': 1,
@@ -8,7 +8,6 @@ const LogType = {
 	'exception': 4
 };
 
-const scriptResources = new Map<string, UnityEngine.Object>();
 const emptyResources = new UnityEngine.Object();
 const isUnityEditor = UnityEngine.Application.isEditor;
 
@@ -29,9 +28,9 @@ function print(type: keyof typeof LogType, showStack: boolean, ...args: unknown[
 			message += ' ';
 		}
 	}
-	let unityLogTarget: UnityEngine.Object = null;
+	const unityLogTarget: UnityEngine.Object = emptyResources;
 	if (showStack || UnityEngine.Application.isEditor) {
-		var stacks = new Error().stack.split('\n');
+		const stacks = new Error().stack.split('\n');
 		for (let i = 3; i < stacks.length; i++) {
 			let line = stacks[i];
 			message += '\n';
@@ -46,12 +45,6 @@ function print(type: keyof typeof LogType, showStack: boolean, ...args: unknown[
 					line = line.replace(/\s\(/, ` (<a href="${file}" line="${lineNumber}">`);
 					line = line.replace(/\)$/, ' </a>)');
 					line = line.replace(matches[1], file);
-					if (!unityLogTarget) {
-						if (!scriptResources.has(file)) {
-							scriptResources.set(file, UnityEditor.AssetDatabase.LoadAssetAtPath(file, $typeof(UnityEngine.Object)));
-						}
-						unityLogTarget = scriptResources.get(file);
-					}
 				}
 			}
 			message += line;
@@ -80,7 +73,7 @@ if (typeof (globalConsole) === 'undefined') {
 	});
 } else {
 	for (const key in LogType) {
-		const func: Function = globalConsole[key];
+		const func: (...args: any[]) => void = globalConsole[key];
 		if (typeof func === 'function') {
 			globalConsole[key] = function () {
 				func.apply(globalConsole, arguments);

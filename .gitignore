@@ -4,12 +4,7 @@ Build/
 Temp/
 node_modules/
 
-
-Assets/Plugins/**/*/*puerts.dll
-Assets/Plugins/**/*/*puerts.so
-Assets/Plugins/**/*/*puerts.a
-Assets/Plugins/**/*/*puerts.bundle
-Assets/Plugins/**/*/*wee8.a
+Assets/\[tinyfun\]
 
 obj/
 *.csproj
@@ -21,8 +16,5 @@ Assets/csharp/gen/
 Assets/csharp/gen.meta
 Assets/StreamingAssets/scripts/
 Assets/StreamingAssets/scripts.meta
-
-UI/obj/
-
 
 yarn.lock

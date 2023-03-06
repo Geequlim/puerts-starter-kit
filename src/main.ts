@@ -18,7 +18,7 @@ interface IScriptLauncher {
 export default function main(lancher: IScriptLauncher) {
 	return new JavaScriptApplication(lancher);
 }
-
+declare const process: { version: string };
 class JavaScriptApplication {
 	private static $inst: JavaScriptApplication;
 	public static get inst(): JavaScriptApplication { return this.$inst; }
@@ -29,7 +29,8 @@ class JavaScriptApplication {
 		launcher.JS_update = this.update.bind(this);
 		launcher.JS_lateUpdate = this.lateUpdate.bind(this);
 		launcher.JS_finalize = this.finalize.bind(this);
-		console.log(`已启动 JavaScript 虚拟机`);
+
+		console.log(`已启动 JavaScript 虚拟机`, process?.version || '');
 		this.initialize();
 	}
 

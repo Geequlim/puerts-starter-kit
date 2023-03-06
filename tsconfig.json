@@ -12,8 +12,8 @@
 		"experimentalDecorators": true,
 		"baseUrl": "src",
 		"typeRoots": [
-			"Assets/Libraries/Puerts/Typing/puerts",
-			"Assets/csharp/gen/Typing/csharp"
+			"node_modules/@types",
+			"src/types"
 		],
 		"skipLibCheck": true,
 		"noImplicitAny": true,
