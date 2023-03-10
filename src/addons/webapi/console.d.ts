@@ -27,7 +27,7 @@ declare const console: {
 	trace(...message): void;
 
 	/** Log JavaScript Objects as JSON format */
-	LOG_OBJECT_TO_JSON: boolean;
+	LOG_OBJECT_TO_JSON?: boolean;
 
 	/** function to remap stack pathes */
 	STACK_REMAP?: (path: string) => string;

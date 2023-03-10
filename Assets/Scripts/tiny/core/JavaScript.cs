@@ -5,12 +5,28 @@ using UnityEngine;
 namespace tiny
 {
 
+
+
 	public class JavaScriptLauncher : MonoBehaviour
 	{
 		public delegate void JavaScriptMain(JavaScriptLauncher instance);
 		public bool WaitForDebugger = false;
 		public int DebuggerPort = 5556;
-		public string DebuggerRoot = System.IO.Path.Combine(Application.streamingAssetsPath, "scripts");
+		protected string[] Polyfills = new string[] {
+			"polyfills/puerts.tiny.mjs",
+			"polyfills/webapi.mjs",
+			"polyfills/source-map-support.mjs",
+		};
+		protected string Bootstrap = "scripts/bootstrap.mjs";
+
+		public string DebuggerRoot = String.Empty;
+#if UNITY_EDITOR
+		public static string getDefaultDebuggerRoot()
+		{
+			return System.IO.Path.Combine(Application.dataPath, "Scripts/Resources").Replace("\\", "/");
+		}
+#endif
+
 		public Puerts.JsEnv vm;
 		public Action<float> JS_update;
 		public Action<float> JS_fixedUpdate;
@@ -19,7 +35,6 @@ namespace tiny
 		public JavaScriptLoader loader { get; private set; }
 
 		public static JavaScriptLauncher inst { get; private set; }
-		static JavaScriptLauncher() { }
 
 		protected virtual async System.Threading.Tasks.Task StartJavaScript()
 		{
@@ -32,11 +47,14 @@ namespace tiny
 			{
 				await vm.WaitDebuggerAsync();
 			}
+			// vm.Eval(String.Format(@"
+			// 	Object.defineProperty(globalThis, '__tiny_DebuggerRoot', { value: '{0}', enumerable: true, configurable: false, writable: false });
+			// ", DebuggerRoot));
 			// 加载启动JS脚本, 执行脚本 main 函数
-			vm.Eval("console.log('Hello', process.version)");
-			// vm.ExecuteModule("bootstrap.js");
-			var javascript_main = vm.Eval<JavaScriptMain>("require('bootstrap.js');", loader.GetScriptDebugPath("bootstrap.js"));
-			// var javascript_main = vm.ExecuteModule("bootstrap.js");
+			foreach (var polyfill in this.Polyfills) {
+				vm.ExecuteModule(polyfill);
+			}
+			var javascript_main = vm.ExecuteModule<JavaScriptMain>(Bootstrap, "default");
 			javascript_main(this);
 		}
 

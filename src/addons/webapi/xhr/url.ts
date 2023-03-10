@@ -5,28 +5,11 @@ export interface IURL {
 	port?: number;
 	protocal?: string;
 }
-// @ts-ignore
-import Url from './thirdpart/url-parser/url-parser'
-
+import parse from 'url-parse';
 export function parse_url(url: string): IURL {
-	// const regex = /^([a-z]+?)\:\/\/([^\/?#:]+)(:(\d+))?(?:[\/?#]|$)(.*)/i;
-	// const matches = url.match(regex);
-	// if (matches) {
-	// 	return {
-	// 		url,
-	// 		protocal: matches[1],
-	// 		hostname: matches[2],
-	// 		port: matches[4] ? parseInt(matches[4]) : undefined,
-	// 		path: matches[5],
-	// 	};
-	// } else {
-	// 	return {
-	// 		url
-	// 	};
-	// }
-	const u = new Url(url);
-	u.url = url;
-	return u;
+	const ret = parse(url);
+	Object.assign(ret, { url });
+	return ret as unknown as IURL;
 }
 
 

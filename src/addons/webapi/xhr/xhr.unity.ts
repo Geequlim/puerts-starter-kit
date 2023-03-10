@@ -1,6 +1,5 @@
 import { IURL, parse_url } from "./url";
-// @ts-ignore
-import MIMEType from "./thirdpart/mimetype/mime-type";
+import MIMEType from "whatwg-mimetype";
 import { XMLHttpRequestReadyState, BodyInit, XMLHttpRequestBase, XMLHttpRequestMethod, XMLHttpRequestEventTargetEventMap, XMLHttpRequestEventTarget, XMLHttpRequestUpload, HttpStatusCode } from "./xhr.common";
 import { UnityEngine, System } from "csharp";
 

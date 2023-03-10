@@ -1,12 +1,3 @@
-if (!PRODUCTION) {
-	require('addons/source-map-support.unity.js');
-	console.STACK_REMAP = (path) => {
-		let r = path.replace('Assets/StreamingAssets/scripts/webpack:///', '');
-		r = r.replace('webpack-internal:///./', '');
-		return r;
-	};
-}
-
 interface IScriptLauncher {
 	JS_start(): void;
 	JS_fixedUpdate(delta: number): void;
@@ -18,7 +9,8 @@ interface IScriptLauncher {
 export default function main(lancher: IScriptLauncher) {
 	return new JavaScriptApplication(lancher);
 }
-declare const process: { version: string };
+declare const process: { version?: string, release?: { name?: string; }; };
+
 class JavaScriptApplication {
 	private static $inst: JavaScriptApplication;
 	public static get inst(): JavaScriptApplication { return this.$inst; }
@@ -30,7 +22,7 @@ class JavaScriptApplication {
 		launcher.JS_lateUpdate = this.lateUpdate.bind(this);
 		launcher.JS_finalize = this.finalize.bind(this);
 
-		console.log(`已启动 JavaScript 虚拟机`, process?.version || '');
+		console.log(`已启动 JavaScript 虚拟机`, process.release?.name || '', process.version || '');
 		this.initialize();
 	}
 

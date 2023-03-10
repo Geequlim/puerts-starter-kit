@@ -12,9 +12,12 @@ obj/
 
 Assets/res/
 Assets/res.meta
-Assets/csharp/gen/
-Assets/csharp/gen.meta
-Assets/StreamingAssets/scripts/
-Assets/StreamingAssets/scripts.meta
+
+Assets/Scripts/gen/
+Assets/Scripts/gen.meta
+Assets/Scripts/Resources/scripts/*.mjs
+Assets/Scripts/Resources/scripts/*.mjs.meta
+Assets/Scripts/Resources/scripts/version.json
+Assets/Scripts/Resources/scripts/version.json.meta
 
 yarn.lock

@@ -15,7 +15,7 @@ function print(type: keyof typeof LogType, showStack: boolean, ...args: unknown[
 	let message = '';
 	for (let i = 0; i < args.length; i++) {
 		const element = args[i];
-		if (typeof element === 'object' && console.LOG_OBJECT_TO_JSON) {
+		if (typeof element === 'object' && console['LOG_OBJECT_TO_JSON']) {
 			if (element instanceof Error) {
 				message += element.message;
 			} else {
@@ -38,8 +38,8 @@ function print(type: keyof typeof LogType, showStack: boolean, ...args: unknown[
 				const matches = line.match(/at\s.*?\s\((.*?)\:(\d+)/);
 				if (matches && matches.length >= 3) {
 					let file = matches[1].replace(/\\/g, '/');
-					if (console.STACK_REMAP) {
-						file = console.STACK_REMAP(file);
+					if (console['STACK_REMAP']) {
+						file = console['STACK_REMAP'](file);
 					}
 					const lineNumber = matches[2];
 					line = line.replace(/\s\(/, ` (<a href="${file}" line="${lineNumber}">`);

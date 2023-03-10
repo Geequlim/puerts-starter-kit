@@ -1,37 +1,44 @@
 // @ts-nocheck
+const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
+// const nodeExternals = require('webpack-node-externals');
 const workspace = path.resolve(__dirname);
-const fs = require('fs');
 
 /** 忽略编辑的第三方库 */
-const externals = {
-	csharp: "csharp",
-	puerts: "puerts",
-	path: "path",
-	fs: "fs",
-};
+const externals = [
+	{
+		csharp: "global polyfill:csharp",
+		puerts: "global polyfill:puerts",
+		path: "global polyfill:path",
+		fs: "global polyfill:fs",
+	},
+	// nodeExternals({}),
+];
+
+const scriptOutputRoot = 'Assets/Scripts/Resources/scripts';
+const polyfillOutputRoot = 'Assets/Scripts/Resources/polyfills';
 
 const entries = {
 	'source-map-support': {
-		input: 'src/addons/source-map-support.unity.js',
-		path: 'Assets/StreamingAssets/scripts',
-		filename: 'source-map-support.js'
-	},
-	bundle: {
-		input: 'src/main.ts',
-		path: 'Assets/StreamingAssets/scripts',
-		filename: 'bundle.js'
+		input: 'src/addons/source-map-support.unity.ts',
+		path: polyfillOutputRoot,
+		filename: 'source-map-support.mjs'
 	},
 	webapi: {
 		input: 'src/addons/webapi/index.unity.ts',
-		path: 'Assets/StreamingAssets/scripts',
-		filename: 'webapi.js'
+		path: polyfillOutputRoot,
+		filename: 'webapi.mjs'
+	},
+	bundle: {
+		input: 'src/main.ts',
+		path: scriptOutputRoot,
+		filename: 'bundle.mjs'
 	},
 	test: {
 		input: 'src/test/index.ts',
-		path: 'Assets/StreamingAssets/scripts',
-		filename: 'bundle.js'
+		path: scriptOutputRoot,
+		filename: 'bundle.mjs'
 	},
 };
 
@@ -74,11 +81,17 @@ module.exports = (env) => {
 	}
 
 	return ({
+		target: 'es2020',
+		experiments: {
+			outputModule: true
+		},
 		entry: [path.join(workspace, entries[env.entry].input)],
 		output: {
 			path: path.join(workspace, entries[env.entry].path),
 			filename: entries[env.entry].filename,
-			libraryTarget: 'commonjs',
+			library: {
+				type: 'module',
+			}
 		},
 		module: {
 			rules: [
@@ -97,22 +110,21 @@ module.exports = (env) => {
 		},
 		plugins: [
 			new HashGeneratorPlugin({ output: path.join(entries.bundle.path, 'version.json') }),
-			env.production ? new webpack.DefinePlugin({}) : new (require('webpackbar'))(),
-			env.analyze ? new (require('webpack-bundle-analyzer')).BundleAnalyzerPlugin() : new webpack.DefinePlugin({}),
-			env.circularDetect ? new (require('circular-dependency-plugin'))(require('../tools/circular-dependency')) : new webpack.DefinePlugin({}),
+			env.production ? null : new (require('webpackbar'))(),
+			env.analyze ? new (require('webpack-bundle-analyzer')).BundleAnalyzerPlugin() : null,
+			env.circularDetect ? new (require('circular-dependency-plugin'))(require('../tools/circular-dependency')) : null,
 			// 相当于 C++ 的宏定义，键名会被替换为值的字符串
 			new webpack.DefinePlugin({
 				PRODUCTION: JSON.stringify(env.production == true)
 			}),
 			// ESBuild 不会自动检查TS语法，这里添加相关插件
-			env.esbuild ? new (require('fork-ts-checker-webpack-plugin'))() : new webpack.DefinePlugin({}),
+			env.esbuild ? new (require('fork-ts-checker-webpack-plugin'))() : null,
 			new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }),
 			new webpack.SourceMapDevToolPlugin({
 				noSources: !env.production,
-				// sourceRoot: workspace,
 				filename: env.production ? `${entries[env.entry].filename}.map` : undefined
 			})
-		],
+		].filter(p => p != null),
 		devtool: false,
 		resolve: {
 			extensions: ['.tsx', '.ts', '.js', 'glsl', 'md', 'txt'],

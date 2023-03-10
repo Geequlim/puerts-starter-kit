@@ -2,7 +2,8 @@ using System.IO;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System.Linq;
+using UnityEditor;
 
 namespace tiny
 {
@@ -19,6 +20,7 @@ namespace tiny
 		ScriptVersion version { get; }
 		bool FileExists(string filepath);
 		string ReadFile(string filepath);
+		string GetScriptDebugPath(string filepath);
 		void Close();
 	}
 
@@ -32,7 +34,7 @@ namespace tiny
 		{
 			this.debugRoot = debugRoot;
 			loaders = new List<IScriptLoader>() {
-				new PuertsBuiltinScriptLoader(),
+				new BuiltinScriptLoader(),
 				new ScriptDirectoryLoader(Path.Combine(UnityEngine.Application.streamingAssetsPath, "scripts")),
 				new ScriptDirectoryLoader(scriptPatchDirectory),
 			};
@@ -45,10 +47,6 @@ namespace tiny
 
 		public string GetScriptDebugPath(string filepath)
 		{
-			if (filepath.StartsWith("puerts/"))
-			{
-				return Path.Combine("puerts-internal://", filepath);
-			}
 			return System.IO.Path.Combine(debugRoot, filepath).Replace("\\", "/");
 		}
 
@@ -76,41 +74,55 @@ namespace tiny
 		}
 	}
 
-	public class PuertsBuiltinScriptLoader : IScriptLoader
-	{
-		static HashSet<string> DiabledBuitinScripts = new HashSet<string> {
+	public class BuiltinScriptLoader : IScriptLoader {
+
+		public ScriptVersion version { get; private set; }
+		public static string[] Excludes = new string[] {
 			"puerts/log.mjs",
 		};
 
-		public ScriptVersion version { get; private set; }
+		protected Dictionary<string, Tuple<bool, TextAsset>> cache = new Dictionary<string, Tuple<bool, TextAsset>>();
 
-		public PuertsBuiltinScriptLoader()
-		{
-			version = new ScriptVersion() { time = System.DateTime.Now.ToFileTime(), hash = "" };
+		public BuiltinScriptLoader() {
+			version = new ScriptVersion() { time = 0, hash = "" };
 		}
 
-		public bool FileExists(string filepath)
-		{
-			return filepath.StartsWith("puerts/");
+		public bool FileExists(string filepath) {
+			if (cache.TryGetValue(filepath, out var value)) {
+				return value.Item1;
+			} else {
+				var ext = Path.GetExtension(filepath);
+				var rid = filepath.Substring(0, filepath.Length - ext.Length);
+				var asset = UnityEngine.Resources.Load<UnityEngine.TextAsset>(rid);
+				var exists = asset != null;
+				cache[filepath] = new Tuple<bool, TextAsset>(exists, asset);
+				return exists;
+			}
 		}
 
-		public string ReadFile(string filepath)
-		{
-			if (DiabledBuitinScripts.Contains(filepath)) return "";
-			var ext = Path.GetExtension(filepath);
-			filepath = filepath.Substring(0, filepath.Length - ext.Length);
-			var asset = UnityEngine.Resources.Load<UnityEngine.TextAsset>(filepath);
-			return asset.text;
+		public string ReadFile(string filepath) {
+			if (Excludes.Contains(filepath)) return String.Empty;
+			if (cache.TryGetValue(filepath, out var value)) {
+				return value.Item2.text;
+			}
+			return String.Empty;
 		}
 
-		public void Close()
-		{
+		public void Close() {
+			foreach (var item in this.cache) {
+				if (item.Value.Item1) {
+					UnityEngine.Resources.UnloadAsset(item.Value.Item2);
+				}
+			}
+			cache.Clear();
+		}
 
+		public string GetScriptDebugPath(string filepath) {
+			return AssetDatabase.GetAssetPath(cache[filepath].Item2);
 		}
 	}
 
-	public class ScriptDirectoryLoader : IScriptLoader
-	{
+	public class ScriptDirectoryLoader : IScriptLoader {
 		public string directory { get; private set; }
 		public ScriptVersion version { get; private set; }
 
@@ -130,17 +142,19 @@ namespace tiny
 			return System.IO.File.ReadAllText(System.IO.Path.Combine(directory, filepath));
 		}
 
-		public void Close()
-		{
+		public void Close() {
+
 		}
 
-		public void Reload()
-		{
+		public void Reload() {
 			var versionFile = System.IO.Path.Combine(directory, ScriptVersion.VERSION_FILE_NAME);
-			if (System.IO.File.Exists(versionFile))
-			{
+			if (System.IO.File.Exists(versionFile)) {
 				version = JsonUtility.FromJson<ScriptVersion>(System.IO.File.ReadAllText(versionFile));
 			}
+		}
+
+		public string GetScriptDebugPath(string filepath) {
+			return System.IO.Path.Combine(directory, filepath).Replace("\\", "/");
 		}
 	}
 }

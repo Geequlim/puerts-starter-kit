@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace tiny
@@ -12,6 +13,12 @@ namespace tiny
 		void Aweak()
 		{
 			if (UnityEngine.Application.isEditor) frameToWait = 0;
+#if UNITY_EDITOR
+			if (this.DebuggerRoot == String.Empty) {
+				this.DebuggerRoot = JavaScriptLauncher.getDefaultDebuggerRoot();
+			}
+			UnityEditor.EditorUtility.SetDirty(this);
+#endif
 		}
 
 		public static void Restart()
@@ -58,7 +65,7 @@ namespace tiny
 			base.DrawDefaultInspector();
 			if (UnityEngine.GUILayout.Button("重置调试目录"))
 			{
-				(target as JavaScriptLauncher).DebuggerRoot = System.IO.Path.Combine(UnityEngine.Application.streamingAssetsPath, "scripts").Replace("\\", "/");
+				(target as JavaScriptLauncher).DebuggerRoot = JavaScriptLauncher.getDefaultDebuggerRoot();
 				UnityEditor.SceneManagement.EditorSceneManager.SaveOpenScenes();
 				UnityEditor.EditorUtility.SetDirty(target);
 			}

@@ -273,7 +273,7 @@ public class ExamplesCfg
 	{
 		get
 		{
-			return Path.Combine("src", "types", "unity") + "/";
+			return Path.Combine(Application.dataPath, "Scripts", "gen", "puerts") + "/";
 		}
 	}
 }

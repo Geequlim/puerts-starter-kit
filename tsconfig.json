@@ -6,6 +6,7 @@
 		"lib": [
 			"ES2020"
 		],
+		"allowJs": true,
 		"sourceMap": true,
 		"inlineSources": true,
 		"moduleResolution": "node",
@@ -13,10 +14,12 @@
 		"baseUrl": "src",
 		"typeRoots": [
 			"node_modules/@types",
+			"Assets/Scripts/gen/puerts/Typing/csharp",
 			"src/types"
 		],
 		"skipLibCheck": true,
 		"noImplicitAny": true,
+		"allowSyntheticDefaultImports": true,
 		"suppressImplicitAnyIndexErrors": true
 	},
 	"exclude": [

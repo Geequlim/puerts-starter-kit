@@ -23,19 +23,19 @@
 1. 克隆该项目，项目结构如下
     - `src` TypeScript 脚本目录
     - `Assets/main.unity` 入口场景
-    - `Assets/StreamingAssets/scripts` 编译生成的 JavaScript 脚本
+    - `Assets/Scripts/Resources/scripts` 编译生成的 JavaScript 脚本
     - `Assets/Scripts/Editor/PuertsConfig.cs` puerts 导出配置
-2. 使用Unity打开项目，执行菜单中的`Puerts -> Generate index.d.ts` 导出 C# API, 注意使用 require 模式
+2. 使用Unity打开项目，执行菜单中的`Puerts -> Generate index.d.ts` 导出 C# API
+	- 注意使用 `global.CS` 模式
 3. 安装依赖：进入项目目录执行 `npm install` 或 `yarn install`，国内推荐设置淘宝镜像
 4. 使用 VSCode 打开该项目，执行以下 npm 命令编译 JavaScript 库
     - `npm run webapi:publish:` 或 `yarn webapi:publish` 编译 WebAPI 兼容库
     - `npm run bundle:dev` 或 `yarn bundle:dev` 启动项目编译服务
-![](screenshot/start.png)
 5. 点击运行，启动游戏，如果一切顺利可以看到如下的日志，大功告成
 	```log
 	已启动 JavaScript 虚拟机
-		at new JavaScriptApplication (src/main.ts:23:13 )
-		at main (src/main.ts:12:10 )
+		at new JavaScriptApplication (src/main.ts:25:11 )
+		at main (src/main.ts:10:9 )
 	```
 
 ### 调试
@@ -69,4 +69,4 @@
 	- 实现 JavaScriptLoader 对应的接口
 - 如何配置 C# 导出的接口
 	- 修改 `Assets/Scripts/Editor/PuertsConfig.cs` 文件
-- [puerts 的 Unity 文档](，[参考文档](https://github.com/Tencent/puerts/blob/master/doc/unity/manual.md))
+- [puerts 的 Unity 文档](https://puerts.github.io/docs/puerts/unity/install)
