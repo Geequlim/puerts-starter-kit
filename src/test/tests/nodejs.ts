@@ -11,8 +11,9 @@ export function testNodeJS() {
 	let inNodeJS = typeof process.platform === 'string' && typeof process.versions === 'object';
 	UnitTest.test("NodeJS 环境", inNodeJS, group);
 	if (inNodeJS) {
+		const os = require('os');
+		UnitTest.test("NodeJS 内置 os 模块", typeof os != 'undefined' && os != null, group);
 		const path: PlatformPath = require('path');
-		UnitTest.test("NodeJS 内置模块", typeof path != 'undefined' && path != null, group);
 		const projectRoot = normalizePath(path.dirname(UnityEngine.Application.dataPath));
 		const cwd = normalizePath(process.cwd());
 		UnitTest.test("工作目录在项目根目录", projectRoot === cwd, group);

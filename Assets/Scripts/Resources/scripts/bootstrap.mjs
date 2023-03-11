@@ -1,2 +1,4 @@
-import main from "./bundle.mjs";
-export default main;
+import "./bundle.mjs";
+const entry = globalThis.$entry;
+globalThis.$entry = undefined;
+export default entry.default;

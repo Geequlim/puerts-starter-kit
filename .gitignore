@@ -17,6 +17,8 @@ Assets/Scripts/gen/
 Assets/Scripts/gen.meta
 Assets/Scripts/Resources/scripts/*.mjs
 Assets/Scripts/Resources/scripts/*.mjs.meta
+Assets/Scripts/Resources/scripts/*.js
+Assets/Scripts/Resources/scripts/*.js.meta
 Assets/Scripts/Resources/scripts/version.json
 Assets/Scripts/Resources/scripts/version.json.meta
 

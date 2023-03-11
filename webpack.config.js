@@ -5,16 +5,6 @@ const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const workspace = path.resolve(__dirname);
 
-/** 忽略编辑的第三方库 */
-const externals = [
-	{
-		csharp: "global polyfill:csharp",
-		puerts: "global polyfill:puerts",
-		path: "global polyfill:path",
-		fs: "global polyfill:fs",
-	},
-];
-
 const scriptOutputRoot = 'Assets/Scripts/Resources/scripts';
 const polyfillOutputRoot = 'Assets/Scripts/Resources/polyfills';
 
@@ -22,7 +12,11 @@ const entries = {
 	'source-map-support': {
 		input: 'src/addons/polyfills/source-map-support.unity.ts',
 		path: polyfillOutputRoot,
-		filename: 'source-map-support.mjs'
+		filename: 'source-map-support.mjs',
+		externals: {
+			fs: "global polyfill:fs",
+			path: "global polyfill:path",
+		}
 	},
 	'console': {
 		input: 'src/addons/polyfills/console.unity.ts',
@@ -41,6 +35,11 @@ const entries = {
 	},
 	test: {
 		input: 'src/test/index.ts',
+		path: scriptOutputRoot,
+		filename: 'bundle.mjs'
+	},
+	'test-node': {
+		input: 'src/test/index.node.ts',
 		path: scriptOutputRoot,
 		filename: 'bundle.mjs'
 	},
@@ -78,6 +77,9 @@ module.exports = (env) => {
 	env.backend = env.backend || 'v8';
 	console.log("Compile config:", env);
 
+	const entry = entries[env.entry];
+	const isNode = env.backend === 'node';
+	const isPollify = env.path === polyfillOutputRoot;
 
 	const tsConfigFile = path.join(workspace, 'tsconfig.json');
 	if (env.target) {
@@ -86,24 +88,12 @@ module.exports = (env) => {
 		fs.writeFileSync(tsConfigFile, JSON.stringify(tsconfig, undefined, '\t'));
 	}
 
-	if (env.backend === 'node') {
-		externals.push(
-			nodeExternals({})
-		);
-	}
-
-	return ({
+	const target = {
 		target: 'es2020',
-		experiments: {
-			outputModule: true
-		},
 		entry: [path.join(workspace, entries[env.entry].input)],
 		output: {
 			path: path.join(workspace, entries[env.entry].path),
-			filename: entries[env.entry].filename,
-			library: {
-				type: 'module',
-			}
+			filename: entries[env.entry].filename
 		},
 		module: {
 			rules: [
@@ -131,7 +121,6 @@ module.exports = (env) => {
 			}),
 			// ESBuild 不会自动检查TS语法，这里添加相关插件
 			env.esbuild ? new (require('fork-ts-checker-webpack-plugin'))() : null,
-			new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }),
 			new webpack.SourceMapDevToolPlugin({
 				noSources: !env.production,
 				filename: env.production ? `${entries[env.entry].filename}.map` : undefined
@@ -144,8 +133,31 @@ module.exports = (env) => {
 				new (require('tsconfig-paths-webpack-plugin'))({ configFile: tsConfigFile }),
 			]
 		},
-		// devtool: env.production ? "source-map" : "inline-nosources-cheap-module-source-map",
 		mode: env.production ? "production" : "development",
-		externals,
-	});
+		externals: [
+			{
+				csharp: "global polyfill:csharp",
+				puerts: "global polyfill:puerts",
+			},
+			entry.externals,
+		].filter(e => e),
+	};
+
+	if (isNode) {
+		target.target = 'node';
+		target.externals.push( nodeExternals({}) );
+	} else {
+		target.plugins.push(new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }));
+	}
+
+	if (isPollify) {
+		target.output.library = { type: 'module' };
+	} else {
+		target.output.library = { type: 'global', name: '$entry' };
+	}
+
+	if (target.target === 'es2020') {
+		target.experiments = { outputModule: true };
+	}
+	return target;
 };

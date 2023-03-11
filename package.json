@@ -7,7 +7,7 @@
 		"bundle:publish": "webpack --config webpack.config.js --env production=true",
 		"bundle:analyze": "webpack --config webpack.config.js --env production=true analyze=true",
 		"test": "webpack --config webpack.config.js --watch --env entry=test esbuild=true",
-		"test:node": "webpack --config webpack.config.js --watch --env entry=test esbuild=true backend=node"
+		"test-node": "webpack --config webpack.config.js --watch --env entry=test-node esbuild=true backend=node"
 	},
 	"devDependencies": {
 		"@types/node": "^16.16.0",
