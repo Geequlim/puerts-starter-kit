@@ -10,6 +10,13 @@ const LogType = {
 
 const emptyResources = new UnityEngine.Object();
 const isUnityEditor = UnityEngine.Application.isEditor;
+const REMAP_FUNC = 'STACK_REMAP';
+console[REMAP_FUNC] = (path: string) => {
+	let r = path.split('webpack:///')[1] || path;
+	r = r.replace(UnityEngine.Application.dataPath, 'Assets');
+	r = r.replace('webpack-internal:///./', '');
+	return r;
+};
 
 function print(type: keyof typeof LogType, showStack: boolean, ...args: unknown[]) {
 	let message = '';
@@ -38,8 +45,8 @@ function print(type: keyof typeof LogType, showStack: boolean, ...args: unknown[
 				const matches = line.match(/at\s.*?\s\((.*?)\:(\d+)/);
 				if (matches && matches.length >= 3) {
 					let file = matches[1].replace(/\\/g, '/');
-					if (console['STACK_REMAP']) {
-						file = console['STACK_REMAP'](file);
+					if (console[REMAP_FUNC]) {
+						file = console[REMAP_FUNC](file);
 					}
 					const lineNumber = matches[2];
 					line = line.replace(/\s\(/, ` (<a href="${file}" line="${lineNumber}">`);

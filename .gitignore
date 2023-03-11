@@ -20,4 +20,7 @@ Assets/Scripts/Resources/scripts/*.mjs.meta
 Assets/Scripts/Resources/scripts/version.json
 Assets/Scripts/Resources/scripts/version.json.meta
 
+*.mjs.map
+*.mjs.map.meta
+
 yarn.lock

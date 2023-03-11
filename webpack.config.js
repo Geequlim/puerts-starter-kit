@@ -21,9 +21,14 @@ const polyfillOutputRoot = 'Assets/Scripts/Resources/polyfills';
 
 const entries = {
 	'source-map-support': {
-		input: 'src/addons/source-map-support.unity.ts',
+		input: 'src/addons/polyfills/source-map-support.unity.ts',
 		path: polyfillOutputRoot,
 		filename: 'source-map-support.mjs'
+	},
+	'console': {
+		input: 'src/addons/polyfills/console.unity.ts',
+		path: polyfillOutputRoot,
+		filename: 'console.mjs'
 	},
 	webapi: {
 		input: 'src/addons/webapi/index.unity.ts',

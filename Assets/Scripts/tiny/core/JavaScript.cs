@@ -14,8 +14,9 @@ namespace tiny
 		public int DebuggerPort = 5556;
 		protected string[] Polyfills = new string[] {
 			"polyfills/puerts.tiny.mjs",
-			"polyfills/webapi.mjs",
+			"polyfills/console.mjs",
 			"polyfills/source-map-support.mjs",
+			"polyfills/webapi.mjs",
 		};
 		protected string Bootstrap = "scripts/bootstrap.mjs";
 

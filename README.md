@@ -1,6 +1,6 @@
 ### Unity Puerts 起始项目
 
-使用腾讯的 [puerts](https://github.com/Tencent/puerts) 的 Unity 空项目，搭建好 TypeScript 编译调试工具，IDE配置等常用手脚架，不含任何游戏框架。仅提供 [webapi 兼容层](https://github.com/GodotExplorer/WebAPI)，实现部分常用的 WebAPI，并针对 Unity 优化了 Console API。
+使用 [puerts](https://github.com/Tencent/puerts) 的 Unity 空项目，搭建好 TypeScript 编译调试工具，IDE配置等常用手脚架，不含任何游戏框架。仅提供 [webapi 兼容层](https://github.com/GodotExplorer/WebAPI)，实现部分常用的 WebAPI，并针对 Unity 优化了 Console API。
 
 ### Features
 - 基础单元测试功能
@@ -49,8 +49,6 @@
 |bundle:dev| 启动`main.ts`为入口的编译服务，项目中的脚本变动会自动增量编译到 `bundle.js` |
 |bundle:publish| 使用发布模式编译 `bundle.js` |
 |bundle:analyze| 使用发布模式编译 `bundle.js` 并打开源代码分析服务 |
-|webapi:dev| 启动 webapi 模块的编译服务 |
-|webapi:publish| 使用发布模式编译 webapi 模块 |
 |test:dev| 启动单元测试的编译服务 |
 
 上述所有命令可以在在VSCode编辑的 NPM 脚本面板中一键启动
