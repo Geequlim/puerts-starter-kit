@@ -59,8 +59,11 @@
 提供简单的单元测试，支持表达式、函数、Promise 三种测试规则，能够覆盖大多数单元测试需要。测试入口在 `src/test/GameTest.ts` 脚本中，可参考现有例子使用。
 
 执行 test 单元测试后编译单元测试代码，Unity中运行项目可以进行单元测试
+<details><summary>单元测试截图</summary>
 
 ![](screenshot/unittest.png)
+
+</details>
 
 ### FAQ
 - 如何加载远程脚本，热更新脚本？
