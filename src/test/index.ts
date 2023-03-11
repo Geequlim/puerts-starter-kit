@@ -12,6 +12,8 @@ export default function main(lancher: IScriptLauncher) {
 	new JavaScriptApplication(lancher); // tslint:disable-line
 }
 
+declare const process: { version?: string, release?: { name?: string; }; };
+
 class JavaScriptApplication {
 	private readonly lancher: IScriptLauncher;
 	private static $inst : JavaScriptApplication;
@@ -26,6 +28,7 @@ class JavaScriptApplication {
 		this.lancher.JS_update = this.update.bind(this);
 		this.lancher.JS_lateUpdate = this.lateUpdate.bind(this);
 		this.lancher.JS_finalize = this.finalize.bind(this);
+		console.log(`已启动 JavaScript 虚拟机`, process.release?.name || '', process.version || '');
 		this.initialize();
 	}
 

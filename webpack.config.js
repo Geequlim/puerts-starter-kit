@@ -2,7 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
-// const nodeExternals = require('webpack-node-externals');
+const nodeExternals = require('webpack-node-externals');
 const workspace = path.resolve(__dirname);
 
 /** 忽略编辑的第三方库 */
@@ -13,7 +13,6 @@ const externals = [
 		path: "global polyfill:path",
 		fs: "global polyfill:fs",
 	},
-	// nodeExternals({}),
 ];
 
 const scriptOutputRoot = 'Assets/Scripts/Resources/scripts';
@@ -67,6 +66,7 @@ module.exports = (env) => {
 			analyze: false,
 			target: 'ES2020',
 			esbuild: false,
+			backend: 'v8',
 			entry: 'bundle'
 		};
 	}
@@ -75,6 +75,7 @@ module.exports = (env) => {
 	env.esbuild = JSON.parse(env.esbuild || 'false');
 	env.entry = env.entry || 'bundle';
 	env.target = env.target || 'ES2020';
+	env.backend = env.backend || 'v8';
 	console.log("Compile config:", env);
 
 
@@ -83,6 +84,12 @@ module.exports = (env) => {
 		const tsconfig = JSON.parse(fs.readFileSync(tsConfigFile).toString('utf-8'));
 		tsconfig.compilerOptions.target = env.target;
 		fs.writeFileSync(tsConfigFile, JSON.stringify(tsconfig, undefined, '\t'));
+	}
+
+	if (env.backend === 'node') {
+		externals.push(
+			nodeExternals({})
+		);
 	}
 
 	return ({
@@ -135,10 +142,7 @@ module.exports = (env) => {
 			extensions: ['.tsx', '.ts', '.js', 'glsl', 'md', 'txt'],
 			plugins: [
 				new (require('tsconfig-paths-webpack-plugin'))({ configFile: tsConfigFile }),
-			],
-			fallback: {
-				buffer: require.resolve('buffer'),
-			},
+			]
 		},
 		// devtool: env.production ? "source-map" : "inline-nosources-cheap-module-source-map",
 		mode: env.production ? "production" : "development",

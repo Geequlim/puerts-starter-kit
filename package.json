@@ -6,7 +6,8 @@
 		"bundle:dev": "webpack --config webpack.config.js --watch --env esbuild=true",
 		"bundle:publish": "webpack --config webpack.config.js --env production=true",
 		"bundle:analyze": "webpack --config webpack.config.js --env production=true analyze=true",
-		"test:dev": "webpack --config webpack.config.js --watch --env entry=test esbuild=true"
+		"test": "webpack --config webpack.config.js --watch --env entry=test esbuild=true",
+		"test:node": "webpack --config webpack.config.js --watch --env entry=test esbuild=true backend=node"
 	},
 	"devDependencies": {
 		"@types/node": "^16.16.0",
@@ -28,9 +29,11 @@
 		"webpack-bundle-analyzer": "^4.8.0",
 		"webpack-cli": "^5.0.1",
 		"webpack-dev-server": "^4.11.1",
+		"webpack-node-externals": "^3.0.0",
 		"webpackbar": "^5.0.2"
 	},
 	"dependencies": {
+		"js-yaml": "^4.1.0",
 		"mime": "^3.0.0",
 		"query-string": "^8.1.0",
 		"querystring": "^0.2.1",
