@@ -36,7 +36,7 @@ export class JavaScriptApplication {
 	}
 
 	update(delta: number) {
-		WebAPI.tick();
+		if (typeof WebAPI === 'object') WebAPI.tick();
 	}
 
 	lateUpdate(delta: number) {
@@ -44,7 +44,7 @@ export class JavaScriptApplication {
 	}
 
 	finalize() {
-		WebAPI.finalize();
+		if (typeof WebAPI === 'object') WebAPI.finalize();
 		console.log(`关闭 JavaScript 虚拟机`);
 	}
 }

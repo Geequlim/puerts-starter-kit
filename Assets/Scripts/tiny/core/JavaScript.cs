@@ -14,9 +14,11 @@ namespace tiny
 		public int DebuggerPort = 5556;
 		protected string[] Polyfills = new string[] {
 			"polyfills/puerts.tiny.mjs",
+#if !UNITY_WEBGL || UNITY_EDITOR
 			"polyfills/console.mjs",
-			"polyfills/source-map-support.mjs",
 			"polyfills/webapi.mjs",
+#endif
+			"polyfills/source-map-support.mjs",
 		};
 		protected string Bootstrap = "scripts/bootstrap.mjs";
 
@@ -42,7 +44,11 @@ namespace tiny
 			DontDestroyOnLoad(gameObject);
 			inst = this;
 			loader = new JavaScriptLoader(DebuggerRoot);
+#if UNITY_WEBGL && !UNITY_EDITOR
+			vm = Puerts.WebGL.GetBrowserEnv();
+#else
 			vm = new Puerts.JsEnv(loader);
+#endif
 			this.RegisterClasses(vm);
 			if (WaitForDebugger)
 			{

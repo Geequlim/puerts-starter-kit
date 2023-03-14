@@ -118,7 +118,11 @@ namespace tiny
 		}
 
 		public string GetScriptDebugPath(string filepath) {
+#if UNITY_EDITOR
 			return AssetDatabase.GetAssetPath(cache[filepath].Item2);
+#else
+			return filepath;
+#endif
 		}
 	}
 
