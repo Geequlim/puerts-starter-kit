@@ -22,6 +22,10 @@ Assets/Scripts/Resources/scripts/*.js.meta
 Assets/Scripts/Resources/scripts/version.json
 Assets/Scripts/Resources/scripts/version.json.meta
 
+Packages/packages-lock.json
+ProjectSettings/
+UserSettings/
+
 *.mjs.map
 *.mjs.map.meta
 
