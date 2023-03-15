@@ -23,6 +23,7 @@
 		"suppressImplicitAnyIndexErrors": true
 	},
 	"exclude": [
+		"Library/**/*.ts",
 		"src/addons/webapi/**/*.godot.ts",
 		"src/addons/webapi/**/*.godot.tsx"
 	]
