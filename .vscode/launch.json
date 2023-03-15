@@ -11,12 +11,12 @@
 			"request": "launch"
 		},
 		{
-			"name": "调试 TypeScript",
+			"name": "Unity Editor (TypeScript)",
 			"port": 5556,
 			"type": "node",
 			"request": "attach",
 			"pauseForSourceMap": true,
-			"remoteRoot": "${workspaceFolder}/Assets/StreamingAssets/scripts",
+			"remoteRoot": "${workspaceFolder}/Assets/Scripts/Resources/scripts",
 			"sourceMapPathOverrides": {
 				"webpack:///./*": "${workspaceFolder}/*",
 				"webpack:///./~/*": "${workspaceFolder}/node_modules/*",

@@ -11,5 +11,7 @@
 		"Logs": true,
 		"Temp": true,
 		"node_modules": true
-	}
+	},
+	"omnisharp.useModernNet": false,
+	"omnisharp.dotnetPath": "latest"
 }

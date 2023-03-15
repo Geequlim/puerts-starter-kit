@@ -47,7 +47,7 @@ namespace tiny
 #if UNITY_WEBGL && !UNITY_EDITOR
 			vm = Puerts.WebGL.GetBrowserEnv();
 #else
-			vm = new Puerts.JsEnv(loader);
+			vm = new Puerts.JsEnv(loader, DebuggerPort);
 #endif
 			this.RegisterClasses(vm);
 			if (WaitForDebugger)

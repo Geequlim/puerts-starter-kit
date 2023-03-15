@@ -31,7 +31,8 @@
 4. 使用 VSCode 打开该项目，执行以下 npm 命令编译 JavaScript 库
     - `npm run webapi:publish:` 或 `yarn webapi:publish` 编译 WebAPI 兼容库
     - `npm run bundle:dev` 或 `yarn bundle:dev` 启动项目编译服务
-5. 点击运行，启动游戏，如果一切顺利可以看到如下的日志，大功告成
+5. 打开 main 场景，选中其中的 main 节点，点击属性面板中的`重置调试目录`按钮
+6. 点击运行，启动游戏，如果一切顺利可以看到如下的日志，大功告成
 	```log
 	已启动 JavaScript 虚拟机
 		at new JavaScriptApplication (src/main.ts:25:11 )
@@ -66,6 +67,8 @@
 </details>
 
 ### FAQ
+- 无法下断点/日志中的堆栈总是在 bundle 文件内
+	- 到 main 场景中重置调试目录
 - 如何加载远程脚本，热更新脚本？
 	- 实现 JavaScriptLoader 对应的接口
 - 如何配置 C# 导出的接口
