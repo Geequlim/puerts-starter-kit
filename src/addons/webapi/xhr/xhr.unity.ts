@@ -180,7 +180,7 @@ class UnityXMLHttpRequest extends XMLHttpRequestBase {
 				this.readyState = XMLHttpRequestReadyState.LOADING;
 			}
 
-			if (this._request.isNetworkError || this._request.isHttpError || this._request.isDone) {
+			if (this._request.isDone || this._request.result != UnityEngine.Networking.UnityWebRequest.Result.InProgress) {
 				this.$finished_load();
 			} else if (this._internal_request) {
 				if (this._progress !== this._internal_request.progress) {
@@ -193,11 +193,11 @@ class UnityXMLHttpRequest extends XMLHttpRequestBase {
 
 	private $finished_load() {
 		this.readyState = XMLHttpRequestReadyState.DONE;
-		if (this._request.isDone || this._request.isHttpError) {
+		if (this._request.isDone || this._request.result === UnityEngine.Networking.UnityWebRequest.Result.DataProcessingError) {
 			this._internal_respons_headers = this._request.GetResponseHeaders();
 			this.$process_response();
 		}
-		if (this._request.isNetworkError || this._request.isHttpError) {
+		if (this._request.result != UnityEngine.Networking.UnityWebRequest.Result.Success) {
 			this.$dispatch_event('error');
 		} else {
 			this._progress = 1;
