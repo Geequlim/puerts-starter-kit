@@ -17,6 +17,7 @@ console[REMAP_FUNC] = (path: string) => {
 	r = r.replace('webpack-internal:///./', '');
 	return r;
 };
+let workspace = '';
 
 function print(type: keyof typeof LogType, showStack: boolean, ...args: unknown[]) {
 	let message = '';
@@ -37,6 +38,7 @@ function print(type: keyof typeof LogType, showStack: boolean, ...args: unknown[
 	}
 	const unityLogTarget: UnityEngine.Object = emptyResources;
 	if (showStack || UnityEngine.Application.isEditor) {
+		if (!workspace) workspace = UnityEngine.Application.dataPath.replace('Assets', '');
 		const stacks = new Error().stack.split('\n');
 		for (let i = 3; i < stacks.length; i++) {
 			let line = stacks[i];
@@ -49,7 +51,7 @@ function print(type: keyof typeof LogType, showStack: boolean, ...args: unknown[
 						file = console[REMAP_FUNC](file);
 					}
 					const lineNumber = matches[2];
-					line = line.replace(/\s\(/, ` (<a href="${file}" line="${lineNumber}">`);
+					line = line.replace(/\s\(/, ` (<a href="file://${workspace}/${file}" line="${lineNumber}">`);
 					line = line.replace(/\)$/, ' </a>)');
 					line = line.replace(matches[1], file);
 				}
