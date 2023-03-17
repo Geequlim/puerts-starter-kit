@@ -44,14 +44,16 @@ function print(type: keyof typeof LogType, showStack: boolean, ...args: unknown[
 			let line = stacks[i];
 			message += '\n';
 			if (isUnityEditor) {
-				const matches = line.match(/at\s.*?\s\((.*?)\:(\d+)/);
+				const matches = line.match(/at\s.*?\s\((.*?)\:(\d+)(:(\d+))?/);
 				if (matches && matches.length >= 3) {
 					let file = matches[1].replace(/\\/g, '/');
 					if (console[REMAP_FUNC]) {
 						file = console[REMAP_FUNC](file);
 					}
+					let column = matches.length >= 5 ? matches[4] : '0';
 					const lineNumber = matches[2];
-					line = line.replace(/\s\(/, ` (<a href="file://${workspace}/${file}" line="${lineNumber}">`);
+					const path = `${workspace}/${file}`.replace(/\/\//g, '/');
+					line = line.replace(/\s\(/, ` (<a href="${path}" line="${lineNumber}" column="${column}">`);
 					line = line.replace(/\)$/, ' </a>)');
 					line = line.replace(matches[1], file);
 				}
