@@ -4,6 +4,7 @@ class EditorWindow extends tiny.JSEditorWindow {
 
 	get title(): string { return this.constructor.name; }
 
+	onConstruct() {}
 	onEnable() {}
 	onFocus() {}
 	onSelectionChange() {}
@@ -16,10 +17,29 @@ class EditorWindow extends tiny.JSEditorWindow {
 	onDestroy() {}
 }
 
+
+class MyEditorWindow extends EditorWindow {
+
+	get title(): string {
+		return '我的窗口';
+	}
+
+	private myString: string;
+
+	onConstruct(): void {
+		this.myString = 'Hello World';
+	}
+
+	onGUI(): void {
+		UnityEngine.GUILayout.Label("Base Settings", UnityEditor.EditorStyles.boldLabel);
+		this.myString = UnityEditor.EditorGUILayout.TextField("Text Field", this.myString);
+	}
+}
+
 class Editor {
 
 	readonly registedWindowTypes: Record<string, new () => EditorWindow> = {
-		EditorWindow,
+		MyEditorWindow,
 	};
 	readonly windows: EditorWindow[] = [];
 
@@ -42,6 +62,7 @@ class Editor {
 		if (Type) {
 			Object.setPrototypeOf(native, Type.prototype);
 			let window = native as EditorWindow;
+			window.onConstruct();
 			native.functions.OnEnable = window.onEnable.bind(window);
 			let everSetTitle = false;
 			native.functions.OnFocus = () => {

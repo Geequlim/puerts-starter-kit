@@ -108,7 +108,7 @@ namespace tiny {
 
 		[MenuItem("tiny/JS插件/测试窗口")]
 		public static void ShowJSWindow() {
-			inst.makingWindow = "EditorWindow";
+			inst.makingWindow = "MyEditorWindow";
 			EditorWindow.GetWindow(typeof(JSEditorWindow));
 		}
 
