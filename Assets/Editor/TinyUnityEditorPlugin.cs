@@ -9,11 +9,77 @@ namespace tiny {
 	public class JSFunctions {
 		public Action initialize;
 		public Action finalize;
+		public Action<JSEditorWindow> onCreateWindow;
 	}
+
+	public class JSEditorWindowFunctions {
+		public Action OnEnable;
+		public Action OnFocus;
+		public Action OnSelectionChange;
+		public Action OnLostFocus;
+		public Action OnInspectorUpdate;
+		public Action OnHierarchyChange;
+		public Action OnProjectChange;
+		public Action OnGUI;
+		public Action OnDisable;
+		public Action OnDestroy;
+	}
+
+	public class JSEditorWindow : EditorWindow {
+
+		public JSEditorWindowFunctions functions = new JSEditorWindowFunctions();
+
+		public void OnEnable() {
+			if (TinyUnityEditorPlugin.inst != null) {
+				if (TinyUnityEditorPlugin.inst.functions.onCreateWindow != null) {
+					TinyUnityEditorPlugin.inst.functions.onCreateWindow(this);
+				}
+				if (functions.OnEnable != null) functions.OnEnable();
+			}
+		}
+
+		public void OnFocus() {
+			if (functions.OnFocus != null) functions.OnFocus();
+		}
+
+		public void OnSelectionChange() {
+			if (functions.OnSelectionChange != null) functions.OnSelectionChange();
+		}
+
+		public void OnLostFocus() {
+			if (functions.OnLostFocus != null) functions.OnLostFocus();
+		}
+
+		public void OnInspectorUpdate() {
+			if (functions.OnInspectorUpdate != null) functions.OnInspectorUpdate();
+		}
+
+		public void OnHierarchyChange() {
+			if (functions.OnHierarchyChange != null) functions.OnHierarchyChange();
+		}
+
+		public void OnProjectChange() {
+			if (functions.OnProjectChange != null) functions.OnProjectChange();
+		}
+
+		public void OnGUI() {
+			if (functions.OnGUI != null) functions.OnGUI();
+		}
+
+		public void OnDisable() {
+			if (functions.OnDisable != null) functions.OnDisable();
+		}
+
+		public void OnDestroy() {
+			if (functions.OnDestroy != null) functions.OnDestroy();
+		}
+	}
+
 
 	[InitializeOnLoad]
 	public class TinyUnityEditorPlugin {
 		public delegate void JavaScriptMain(TinyUnityEditorPlugin instance);
+		public string makingWindow = String.Empty;
 		public Puerts.JsEnv vm = null;
 		public static TinyUnityEditorPlugin inst = null;
 		protected string[] Polyfills = new string[] {
@@ -34,6 +100,18 @@ namespace tiny {
 			inst = new TinyUnityEditorPlugin();
 		}
 
+		[MenuItem("tiny/JS插件/Reload")]
+		public static void Reload() {
+			if (inst != null) inst.Dispose();
+			inst = new TinyUnityEditorPlugin();
+		}
+
+		[MenuItem("tiny/JS插件/测试窗口")]
+		public static void ShowJSWindow() {
+			inst.makingWindow = "EditorWindow";
+			EditorWindow.GetWindow(typeof(JSEditorWindow));
+		}
+
 		protected TinyUnityEditorPlugin() {
 			var debugRoot = System.IO.Path.Combine(Application.dataPath, "Scripts/Resources").Replace("\\", "/");
 			vm = new Puerts.JsEnv(new tiny.JavaScriptLoader(debugRoot), 5558);
@@ -51,7 +129,6 @@ namespace tiny {
 				if (functions.finalize != null) functions.finalize();
 				vm.Dispose();
 				vm = null;
-				Debug.Log("Dispose JS VM");
 			}
 		}
 
@@ -66,6 +143,7 @@ namespace tiny {
 			vm.UsingFunc<bool>();
 			vm.UsingAction<string, string>();
 			vm.UsingAction<Vector3>();
+			vm.UsingAction<JSEditorWindow>();
 			vm.UsingFunc<Vector3>();
 			vm.UsingAction<UnityEngine.AsyncOperation>();
 		}

@@ -33,6 +33,11 @@ const entries = {
 		path: scriptOutputRoot,
 		filename: 'bundle.mjs'
 	},
+	editor: {
+		input: 'src/editor.ts',
+		path: scriptOutputRoot,
+		filename: 'editor.bundle.mjs'
+	},
 	test: {
 		input: 'src/test/index.ts',
 		path: scriptOutputRoot,
