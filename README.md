@@ -27,10 +27,8 @@
     - `Assets/Scripts/Editor/PuertsConfig.cs` puerts 导出配置
 2. 使用Unity打开项目，执行菜单中的`Puerts -> Generate index.d.ts` 导出 C# API
 	- 注意使用 `global.CS` 模式
-3. 安装依赖：进入项目目录执行 `npm install` 或 `yarn install`，国内推荐设置淘宝镜像
-4. 使用 VSCode 打开该项目，执行以下 npm 命令编译 JavaScript 库
-    - `npm run webapi:publish:` 或 `yarn webapi:publish` 编译 WebAPI 兼容库
-    - `npm run bundle:dev` 或 `yarn bundle:dev` 启动项目编译服务
+3. 安装依赖：进入项目目录执行 `yarn install`，国内推荐设置淘宝镜像
+4. 使用 VSCode 打开该项目，执行`yarn bundle:dev`命令编译 JavaScript 库
 5. 打开 main 场景，选中其中的 main 节点，点击属性面板中的`重置调试目录`按钮
 6. 点击运行，启动游戏，如果一切顺利可以看到如下的日志，大功告成
 	```log
