@@ -5,8 +5,9 @@ Temp/
 node_modules/
 
 Assets/\[tinyfun\]
+Assets/\[tinyfun\].meta
 Assets/\[plugins\]
-
+Assets/\[plugins\].meta
 obj/
 *.csproj
 *.sln
