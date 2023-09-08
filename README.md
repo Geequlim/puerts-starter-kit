@@ -72,3 +72,9 @@
 - 如何配置 C# 导出的接口
 	- 修改 `Assets/Scripts/Editor/PuertsConfig.cs` 文件
 - [puerts 的 Unity 文档](https://puerts.github.io/docs/puerts/unity/install)
+
+#### Linux 环境使用说明
+- UPM 包中没有包含 Linux 版本的 `puerts.so`，需要到release页面下载对应版本的 `puerts.so` 放到
+`Assets/[plugins]/x86_64/libpuerts.so`
+- 下载下来的动态库需要添加可执行权限
+- 如果报错库中的依赖丢失，可以参考 [Tencent/puerts#941](https://github.com/Tencent/puerts/issues/941)

@@ -101,7 +101,7 @@ namespace tiny
 		}
 
 		public string ReadFile(string filepath) {
-			if (Excludes.Contains(filepath)) return String.Empty;
+			if (Excludes.Contains(filepath)) return "undefined;";
 			if (cache.TryGetValue(filepath, out var value)) {
 				return value.Item2.text;
 			}

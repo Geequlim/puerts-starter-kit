@@ -5,6 +5,7 @@ Temp/
 node_modules/
 
 Assets/\[tinyfun\]
+Assets/\[plugins\]
 
 obj/
 *.csproj

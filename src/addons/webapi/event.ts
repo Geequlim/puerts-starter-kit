@@ -28,76 +28,76 @@ export interface EventInit {
 export class Event {
 
 	constructor(type: string, eventInitDict?: EventInit) {
-		this._type = type;
+		this.$type = type;
 		if (eventInitDict) {
-			this._bubbles = eventInitDict.bubbles;
-			this._cancelable = eventInitDict.cancelable;
-			this._composed = eventInitDict.composed;
+			this.$bubbles = eventInitDict.bubbles;
+			this.$cancelable = eventInitDict.cancelable;
+			this.$composed = eventInitDict.composed;
 		}
 	}
 
 	/**
 	 * Returns true or false depending on how event was initialized. True if event goes through its target's ancestors in reverse tree order, and false otherwise.
 	 */
-	get bubbles(): boolean { return this._bubbles; }
-	protected _bubbles: boolean;
+	get bubbles(): boolean { return this.$bubbles; }
+	protected $bubbles: boolean;
 	cancelBubble: boolean;
 
 	/**
 	 * Returns true or false depending on how event was initialized. Its return value does not always carry meaning, but true can indicate that part of the operation during which event was dispatched, can be canceled by invoking the preventDefault() method.
 	 */
-	get cancelable(): boolean { return this._cancelable; }
-	protected _cancelable: boolean;
+	get cancelable(): boolean { return this.$cancelable; }
+	protected $cancelable: boolean;
 
 	/**
 	 * Returns true or false depending on how event was initialized. True if event invokes listeners past a ShadowRoot node that is the root of its target, and false otherwise.
 	 */
-	get composed(): boolean { return this._composed; }
-	protected _composed: boolean;
+	get composed(): boolean { return this.$composed; }
+	protected $composed: boolean;
 
 	/**
 	 * Returns the object whose event listener's callback is currently being invoked.
 	 */
-	get currentTarget(): EventTarget { return this._currentTarget; }
-	protected _currentTarget: EventTarget;
+	get currentTarget(): EventTarget { return this.$currentTarget; }
+	protected $currentTarget: EventTarget;
 
 	/**
 	 * Returns true if preventDefault() was invoked successfully to indicate cancelation, and false otherwise.
 	 */
-	get defaultPrevented(): boolean { return this._defaultPrevented; }
-	protected _defaultPrevented: boolean;
+	get defaultPrevented(): boolean { return this.$defaultPrevented == true; }
+	protected $defaultPrevented: boolean;
 
 	/**
 	 * Returns the event's phase, which is one of NONE, CAPTURING_PHASE, AT_TARGET, and BUBBLING_PHASE.
 	 */
-	get eventPhase(): Phase { return this._eventPhase; }
-	protected _eventPhase: Phase;
+	get eventPhase(): Phase { return this.$eventPhase; }
+	protected $eventPhase: Phase;
 
 	/**
 	 * Returns true if event was dispatched by the user agent, and false otherwise.
 	 */
-	get isTrusted(): boolean { return this._isTrusted; }
-	protected _isTrusted: boolean;
+	get isTrusted(): boolean { return this.$isTrusted; }
+	protected $isTrusted: boolean;
 
 	returnValue: boolean;
 
 	/**
 	 * Returns the object to which event is dispatched (its target).
 	 */
-	get target(): EventTarget { return this._target; }
-	protected _target: EventTarget;
+	get target(): EventTarget { return this.$target; }
+	protected $target: EventTarget;
 
 	/**
 	 * Returns the event's timestamp as the number of milliseconds measured relative to the time origin.
 	 */
-	get timeStamp(): number { return this._timeStamp; }
-	protected _timeStamp: number;
+	get timeStamp(): number { return this.$timeStamp; }
+	protected $timeStamp: number;
 
 	/**
 	 * Returns the type of event, e.g. "click", "hashchange", or "submit".
 	 */
-	get type(): string { return this._type; }
-	protected _type: string;
+	get type(): string { return this.$type; }
+	protected $type: string;
 
 	/**
 	 * Returns the invocation target objects of event's path (objects on which listeners will be invoked), except for any nodes in shadow trees of which the shadow root's mode is "closed" that are not reachable from event's currentTarget.
@@ -107,9 +107,10 @@ export class Event {
 	}
 
 	initEvent(type: string, bubbles?: boolean, cancelable?: boolean): void {
-		this._type = type;
-		this._bubbles = bubbles;
-		this._cancelable = cancelable;
+		this.$type = type;
+		this.$bubbles = bubbles;
+		this.$cancelable = cancelable;
+		this.$timeStamp = Date.now();
 	}
 
 	/**
@@ -117,7 +118,7 @@ export class Event {
 	 */
 	preventDefault(): void {
 		if (this.cancelable) {
-			this._defaultPrevented = true;
+			this.$defaultPrevented = true;
 		}
 	}
 
@@ -125,7 +126,7 @@ export class Event {
 	 * Invoking this method prevents event from reaching any registered event listeners after the current one finishes running and, when dispatched in a tree, also prevents event from reaching any other objects.
 	 */
 	stopImmediatePropagation(): void {
-		this._defaultPrevented = true;
+		this.$defaultPrevented = true;
 		this.cancelBubble = false;
 	}
 
@@ -133,7 +134,7 @@ export class Event {
 	 * When dispatched in a tree, invoking this method prevents event from reaching any objects other than the current object.
 	 */
 	stopPropagation(): void {
-		if (this._bubbles) {
+		if (this.$bubbles) {
 			this.cancelBubble = true;
 		}
 	}
@@ -147,21 +148,21 @@ interface ProgressEventInit extends EventInit {
 
 /** Events measuring progress of an underlying process, like an HTTP request (for an XMLHttpRequest, or the loading of the underlying resource of an <img>, <audio>, <video>, <style> or <link>). */
 export class ProgressEvent<T extends EventTarget = EventTarget> extends Event {
-	get lengthComputable(): boolean { return this._lengthComputable; }
-	protected _lengthComputable: boolean;
+	get lengthComputable(): boolean { return this.$lengthComputable; }
+	protected $lengthComputable: boolean;
 
-	get loaded(): number { return this._loaded; }
-	protected _loaded: number;
+	get loaded(): number { return this.$loaded; }
+	protected $loaded: number;
 
-	get total(): number { return this._total; }
-	protected _total: number;
+	get total(): number { return this.$total; }
+	protected $total: number;
 
 	constructor(type: string, eventInitDict?: ProgressEventInit) {
 		super(type, eventInitDict);
 		if (eventInitDict) {
-			this._lengthComputable = eventInitDict.lengthComputable;
-			this._loaded = eventInitDict.loaded;
-			this._total = eventInitDict.total;
+			this.$lengthComputable = eventInitDict.lengthComputable;
+			this.$loaded = eventInitDict.loaded;
+			this.$total = eventInitDict.total;
 		}
 	}
 }
@@ -192,7 +193,7 @@ interface EventListenerRecord extends AddEventListenerOptions {
 
 export class EventTarget {
 
-	protected _listeners: {[key: string]: EventListenerRecord[]} = {};
+	protected $listeners: {[key: string]: EventListenerRecord[]} = {};
 
 	/**
 	 * Appends an event listener for events whose type attribute value is type. The callback argument sets the callback that will be invoked when the event is dispatched.
@@ -209,8 +210,8 @@ export class EventTarget {
 	 */
 	public addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void {
 		if (!listener) return;
-		if (!(type in this._listeners)) {
-			this._listeners[type] = [];
+		if (!(type in this.$listeners)) {
+			this.$listeners[type] = [];
 		}
 		let recorder: EventListenerRecord = { listener };
 		if (typeof options === "boolean") {
@@ -219,7 +220,7 @@ export class EventTarget {
 			recorder = { ...options, listener };
 		}
 
-		this._listeners[type].push(recorder);
+		this.$listeners[type].push(recorder);
 	}
 
 	/**
@@ -228,12 +229,12 @@ export class EventTarget {
 	public dispatchEvent(event: Event): boolean {
 
 		if (!event || typeof event.type != 'string') return true;
-		const origin_recorders = this._listeners[event.type];
+		const origin_recorders = this.$listeners[event.type];
 		if (!origin_recorders) return true;
 
 		const recorders = origin_recorders.slice();
 		if (!recorders.length) return !event.defaultPrevented;
-		event['_target'] = this;
+		event['$target'] = this;
 		let once_listeners: EventListenerRecord[] = [];
 		for (const recorder of recorders) {
 			let listener: EventListener = null;
@@ -262,8 +263,8 @@ export class EventTarget {
 	 * Removes the event listener in target's event listener list with the same type, callback, and options.
 	 */
 	public removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: EventListenerOptions | boolean): void {
-		if (!listener || !(type in this._listeners)) return;
-		const recorders = this._listeners[type];
+		if (!listener || !(type in this.$listeners)) return;
+		const recorders = this.$listeners[type];
 		for (let i = 0; i < recorders.length; i++) {
 			const recorder = recorders[i];
 			if (recorder.listener === listener) {
@@ -288,9 +289,9 @@ export class EventTarget {
 	 * */
 	public clearEventListeners(type?: string): void {
 		if (typeof(type) === 'string') {
-			this._listeners[type] = undefined;
+			this.$listeners[type] = undefined;
 		} else if (typeof(type) === 'undefined') {
-			this._listeners = {};
+			this.$listeners = {};
 		}
 	}
 }

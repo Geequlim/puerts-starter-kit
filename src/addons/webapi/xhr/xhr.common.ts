@@ -1,9 +1,8 @@
-import { ProgressEvent, EventTarget, Event, AddEventListenerOptions, EventListenerOptions } from "../event";
+import { AddEventListenerOptions, Event, EventListenerOptions, EventTarget, ProgressEvent } from "../event";
 import { IURL } from "./url";
 export type XMLHttpRequestResponseType = "" | "arraybuffer" | "blob" | "document" | "json" | "text";
-export type XMLHttpRequestMethod = "GET" | "POST" | "PUT" | "CREATE" | "DELETE";
+export type XMLHttpRequestMethod = 'CONNECT' | 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT' | 'TRACE';
 export type BodyInit = string | Record<string, any>;
-export enum HttpStatusCode { Continue = 100, SwitchingProtocols = 101, OK = 200, Created = 201, Accepted = 202, NonAuthoritativeInformation = 203, NoContent = 204, ResetContent = 205, PartialContent = 206, MultipleChoices = 300, Ambiguous = 300, MovedPermanently = 301, Moved = 301, Found = 302, Redirect = 302, SeeOther = 303, RedirectMethod = 303, NotModified = 304, UseProxy = 305, Unused = 306, TemporaryRedirect = 307, RedirectKeepVerb = 307, BadRequest = 400, Unauthorized = 401, PaymentRequired = 402, Forbidden = 403, NotFound = 404, MethodNotAllowed = 405, NotAcceptable = 406, ProxyAuthenticationRequired = 407, RequestTimeout = 408, Conflict = 409, Gone = 410, LengthRequired = 411, PreconditionFailed = 412, RequestEntityTooLarge = 413, RequestUriTooLong = 414, UnsupportedMediaType = 415, RequestedRangeNotSatisfiable = 416, ExpectationFailed = 417, UpgradeRequired = 426, InternalServerError = 500, NotImplemented = 501, BadGateway = 502, ServiceUnavailable = 503, GatewayTimeout = 504, HttpVersionNotSupported = 505 }
 
 export interface XMLHttpRequestEventTargetEventMap {
 	"abort": ProgressEvent<XMLHttpRequestEventTarget>;
@@ -53,19 +52,19 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 
 	onreadystatechange: ((this: XMLHttpRequestBase, ev: Event) => any) | null;
 
-	public get url(): Readonly<IURL> { return this._url; }
-	protected _url: IURL;
-	protected _method: XMLHttpRequestMethod;
-	protected _request_headers: { [key: string]: string; } = {};
-	protected _connect_start_time: number;
+	public get url(): Readonly<IURL> { return this.$url; }
+	protected $url: IURL;
+	protected $method: XMLHttpRequestMethod;
+	protected $requestHeaders: { [key: string]: string; } = {};
+	protected $connectionStartAt: number;
 
 	/**
 	 * Returns client's state.
 	 */
-	get readyState(): XMLHttpRequestReadyState { return this._readyState; }
+	get readyState(): XMLHttpRequestReadyState { return this.$readyState; }
 	set readyState(value: XMLHttpRequestReadyState) {
-		if (value != this._readyState) {
-			this._readyState = value;
+		if (value != this.$readyState) {
+			this.$readyState = value;
 			if (this.onreadystatechange) {
 				let event = new Event('readystatechange');
 				this.onreadystatechange.call(this, event);
@@ -74,13 +73,13 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 		}
 	}
 
-	protected _readyState: XMLHttpRequestReadyState;
+	protected $readyState: XMLHttpRequestReadyState;
 
 	/**
 	 * Returns the response's body.
 	 */
-	get response(): any { return this._response; }
-	protected _response: any;
+	get response(): any { return this.$response; }
+	protected $response: any;
 
 	/**
 	 * Returns the text response.
@@ -109,7 +108,7 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	 * Throws an "InvalidStateError" DOMException if responseType is not the empty string or "document".
 	 */
 	get responseXML(): string { return null; };
-	get status(): HttpStatusCode { return 0; };
+	get status(): number { return 0; };
 	readonly statusText: string;
 
 	/**
@@ -122,8 +121,8 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	/**
 	 * Returns the associated XMLHttpRequestUpload object. It can be used to gather transmission information when data is transferred to a server.
 	 */
-	get upload(): XMLHttpRequestUpload { return this._upload; }
-	protected _upload: XMLHttpRequestUpload;
+	get upload(): XMLHttpRequestUpload { return this.$upload; }
+	protected $upload: XMLHttpRequestUpload;
 
 	/**
 	 * True when credentials are to be included in a cross-origin request. False when they are to be excluded in a cross-origin request and when cookies are to be ignored in its response. Initially false.
@@ -158,9 +157,9 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	 * Throws an "InvalidStateError" DOMException if state is loading or done.
 	 */
 	overrideMimeType(mime: string): void {
-		this._overrided_mime = mime;
+		this.$overridedMime = mime;
 	}
-	protected _overrided_mime: string;
+	protected $overridedMime: string;
 
 	/**
 	 * Initiates the request. The body argument provides the request body, if any, and is ignored if the request method is GET or HEAD.
@@ -177,7 +176,7 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	 * Throws a "SyntaxError" DOMException if name is not a header name or if value is not a header value.
 	 */
 	setRequestHeader(name: string, value: string): void {
-		this._request_headers[name.toLowerCase()] = value;
+		this.$requestHeaders[name.toLowerCase()] = value;
 	}
 
 	addEventListener<K extends keyof XMLHttpRequestEventMap>(type: K, listener: (this: XMLHttpRequestBase, ev: XMLHttpRequestEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void {
@@ -189,21 +188,22 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	}
 
 
-	private _poll_task_id: number = -1;
+	private $pollTicker: number = -1;
 	protected $start_poll() {
 		this.$stop_poll();
 		const tick = this.$tick.bind(this);
 		const tickLoop = () => {
-			this._poll_task_id = requestAnimationFrame(tickLoop);
+			this.$pollTicker = requestAnimationFrame(tickLoop);
 			tick();
 		};
-		this._poll_task_id = requestAnimationFrame(tickLoop);
+		this.$pollTicker = requestAnimationFrame(tickLoop);
+		tick();
 	}
 
 	protected $stop_poll() {
-		if (this._poll_task_id != -1) {
-			cancelAnimationFrame(this._poll_task_id);
-			this._poll_task_id = -1;
+		if (this.$pollTicker != -1) {
+			cancelAnimationFrame(this.$pollTicker);
+			this.$pollTicker = -1;
 		}
 	}
 
