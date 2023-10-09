@@ -1,0 +1,16 @@
+develop:
+  actions:
+    - name: Unity 开发
+      actions:
+        - name: dev
+          description: 启动开发编译服务
+          title: 项目脚本编译服务
+          command: yarn webpack --config webpack.config.js --watch --env esbuild=true
+        - name: webapi
+          description: 启动 webapi 兼容层编译服务
+          title: webapi 兼容层编译服务
+          command: yarn webpack --config webpack.config.js --watch --env entry=webapi esbuild=true
+        - name: test
+          description: 启动单元测试编译服务
+          title: 单元测试编译服务
+          command: yarn webpack --config webpack.config.js --watch --env entry=test esbuild=true

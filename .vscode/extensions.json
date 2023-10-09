@@ -1,0 +1,9 @@
+{
+	"recommendations": [
+		"alexdima.copy-relative-path",
+		"geequlim.tiny-tool-kit",
+		"dbaeumer.vscode-eslint",
+		"eamodio.gitlens",
+		"redhat.vscode-yaml"
+	]
+}

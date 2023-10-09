@@ -1,9 +1,12 @@
 {
 	"files.associations": {
+		"*.tiny": "yaml",
 		"*.yaml.txt": "yaml",
 		"*.js.txt": "javascript",
 		"*.meta": "yaml",
-		"*.asset": "yaml"
+		"*.manifest": "yaml",
+		"*.asset": "yaml",
+		"project.tiny": "yaml"
 	},
 	"files.exclude":
 	{
