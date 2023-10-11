@@ -1,7 +1,7 @@
 import { createCommand } from 'commander';
 import * as path from 'path';
 import 'source-map-support/register';
-import { injectPuerts2WebGL } from './unity/webgl/puerts/injecter';
+import { injectPuerts2WXMinigame, injectPuerts2WebGL } from './unity/webgl/puerts/injecter';
 
 
 function main(...argv: string[]) {
@@ -15,8 +15,10 @@ function main(...argv: string[]) {
 		.argument('action', `操作名称`, trimArgument)
 		.option('-o, --root <channel>', 'WebGL 构建目录', trimArgument)
 		.action((name: string, options: { root: string}) => {
-			if (name === 'puerts-inject') {
+			if (name === 'inject-webgl') {
 				injectPuerts2WebGL(options.root);
+			} else if (name == 'inject-minigame') {
+				injectPuerts2WXMinigame(options.root);
 			}
 		});
 

@@ -35,7 +35,11 @@ publish:
   actions:
     - name: Unity WebGL
       actions:
-        - name: inject puerts
-          description: 注入 puerts 代码
-          title: 注入 puerts 代码
-          command: node .\tools\bin\cli.js unity-webgl puerts-inject --root=Build/webgl
+        - name: inject-webgl
+          description: 注入Web/抖音小游戏
+          title: 注入 puerts-webgl 代码
+          command: node .\tools\bin\cli.js unity-webgl inject-webgl --root=Build/webgl
+        - name: inject-wxgame
+          description: 注入微信小游戏
+          title: 注入 puerts-minigame 代码
+          command: node .\tools\bin\cli.js unity-webgl inject-minigame --root=Build/minigame

@@ -19,7 +19,7 @@ export class JavaScriptApplication {
 		launcher.JS_lateUpdate = this.lateUpdate.bind(this);
 		launcher.JS_finalize = this.finalize.bind(this);
 
-		console.log(`已启动 JavaScript 虚拟机`, process.release?.name || '', process.version || '');
+		console.log(`已启动 JavaScript 虚拟机`, process?.release?.name || '', process?.version || '');
 		this.initialize();
 	}
 

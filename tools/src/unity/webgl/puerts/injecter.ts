@@ -2,6 +2,7 @@ import fs from 'fs';
 const babel = require('./babel');
 import { getFiles } from '../../../utils';
 import path from 'path';
+import { async } from 'fast-glob';
 
 export async function injectPuerts2WebGL(root: string) {
 	const frameworkJS = path.join(root, 'Build/webgl.framework.js');
@@ -18,7 +19,7 @@ var global = (function() { return this; })(); var window = global;
 	const injectJSCode = (code: string, desc: string = '') => {
 		injectContent += `\n(()=>{${desc ? `// ${desc}` : ''}\n${code}\n})();\n`;
 	};
-	const PUERTS_JS_RESOURCES_CODE = await generateJSResources();
+	const PUERTS_JS_RESOURCES_CODE = await generateJSResources(getJSModules());
 	injectJSCode(PUERTS_JS_RESOURCES_CODE, 'PUERTS_JS_RESOURCES 定义');
 	injectJSCode(fs.readFileSync('tools/src/unity/webgl/puerts/template/puerts-runtime.js', 'utf-8'), 'puerts-runtime.js');
 
@@ -30,7 +31,33 @@ ${frameworkJSContent}
 	fs.writeFileSync(frameworkJS, frameworkJSContent, 'utf-8');
 }
 
-async function generateJSResources() {
+export async function injectPuerts2WXMinigame(root: string) {
+	const dir = path.join(root, 'puerts_minigame_js_resources');
+	for (const file of getJSModules()) {
+		const filename = path.basename(file);
+		const basename = path.basename(path.dirname(file))
+		const outfile = path.join(dir, basename, filename.endsWith('.js') ? filename : `${filename}.js`);
+		if (!fs.existsSync(path.dirname(outfile))) {
+			fs.mkdirSync(path.dirname(outfile), { recursive: true });
+		}
+		fs.copyFileSync(file, outfile);
+	}
+
+	fs.copyFileSync('tools/src/unity/webgl/puerts/template/puerts-runtime.js', path.join(root, 'puerts-runtime.js'));
+
+	const PUERTS_RUNTIME_IMPORTER = `import './puerts-runtime.js'`;
+	const gameJSFile = path.join(root, 'game.js');
+	let gameJS = fs.readFileSync(gameJSFile, 'utf-8');
+	if (gameJS.indexOf(PUERTS_RUNTIME_IMPORTER) == -1) {
+		const injectAt = gameJS.indexOf(`import './unity-sdk/index.js';`);
+		if (injectAt != -1) {
+			gameJS = gameJS.slice(0, injectAt) + PUERTS_RUNTIME_IMPORTER + '\n' + gameJS.slice(injectAt);
+			fs.writeFileSync(gameJSFile, gameJS, 'utf-8');
+		}
+	}
+}
+
+function getJSModules() {
 	const modules = getFiles([
 		'Library/PackageCache/com.tencent.puerts.core@*/Runtime/Resources/puerts/*.mjs',
 		'Assets/Scripts/Resources/polyfills/puerts.tiny.mjs',
@@ -38,6 +65,10 @@ async function generateJSResources() {
 		'Assets/Scripts/Resources/scripts/bootstrap.mjs',
 		'Assets/Scripts/Resources/scripts/bundle.mjs'
 	]);
+	return modules;
+}
+
+async function generateJSResources(modules: string[]) {
 	const codes = await Promise.all(modules.map(file => buildForBrowser(file)));
 	const PUERTS_JS_RESOURCES = {} as Record<string, string>;
 	for (let i = 0; i < modules.length; i++) {
