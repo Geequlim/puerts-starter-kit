@@ -1,0 +1,28 @@
+{
+	"compilerOptions": {
+		"module": "CommonJS",
+		"moduleResolution": "node",
+		"lib": [
+			"ES2020",
+			"DOM"
+		],
+		"types": [
+			"node"
+		],
+		"target": "ES2020",
+		"baseUrl": "../src",
+		"skipLibCheck": true,
+		"noImplicitAny": true,
+		"experimentalDecorators": true,
+		"allowSyntheticDefaultImports": true,
+		"suppressImplicitAnyIndexErrors": true
+	},
+	"include": [
+		".",
+		"../src/framework/common",
+		"../src/framework/tiny/core"
+	],
+	"exclude": [
+		"node_modules"
+	]
+}

@@ -3,6 +3,8 @@ Library/
 Build/
 Temp/
 node_modules/
+qrcodes
+TextToolDatas
 
 Assets/\[tinyfun\]
 Assets/\[tinyfun\].meta
@@ -32,3 +34,8 @@ UserSettings/
 *.mjs.map.meta
 
 yarn.lock
+tools/bin/
+Assets/Plugins/ByteGame/
+Assets/Plugins/ByteGame.meta
+Assets/Editor/StarkBuilderSetting.asset
+Assets/Editor/StarkBuilderSetting.asset.meta

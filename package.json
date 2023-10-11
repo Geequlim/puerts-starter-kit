@@ -10,6 +10,8 @@
 		"test": "webpack --config webpack.config.js --watch --env entry=test esbuild=true"
 	},
 	"devDependencies": {
+		"@babel/core": "^7.23.0",
+		"@babel/preset-env": "^7.22.20",
 		"@types/node": "^20.5.9",
 		"@types/uglify-js": "^3.17.2",
 		"@types/url-parse": "^1.4.9",
@@ -20,6 +22,7 @@
 		"esbuild-loader": "^4.0.2",
 		"fast-glob": "^3.3.1",
 		"fork-ts-checker-webpack-plugin": "^8.0.0",
+		"http-server": "^14.1.1",
 		"performance-now": "^2.1.0",
 		"source-map-support": "^0.5.21",
 		"ts-loader": "^9.4.4",

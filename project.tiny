@@ -6,6 +6,12 @@ develop:
           description: 启动开发编译服务
           title: 项目脚本编译服务
           command: yarn webpack --config webpack.config.js --watch --env esbuild=true
+          actions:
+          - name: start-webgl
+            description: 启动 WebGL 端口
+            title: WebGL端口
+            command:
+              - yarn http-server -c-1 -p 3100
         - name: webapi
           description: 启动 webapi 兼容层编译服务
           title: webapi 兼容层编译服务
@@ -14,3 +20,22 @@ develop:
           description: 启动单元测试编译服务
           title: 单元测试编译服务
           command: yarn webpack --config webpack.config.js --watch --env entry=test esbuild=true
+    - name: CLI 工具
+      actions:
+        - name: 编译 CLI 工具
+          command:
+            - yarn install
+            - yarn webpack --config tools/webpack.config.js --env esbuild=true target=ES2020
+        - name: dev
+          title: CLI 编译服务
+          description: 启动编译服务
+          command: yarn webpack --config tools/webpack.config.js --watch --env esbuild=true target=ES2020
+
+publish:
+  actions:
+    - name: Unity WebGL
+      actions:
+        - name: inject puerts
+          description: 注入 puerts 代码
+          title: 注入 puerts 代码
+          command: node .\tools\bin\cli.js unity-webgl puerts-inject --root=Build/webgl
