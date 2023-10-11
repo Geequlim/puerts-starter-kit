@@ -8,6 +8,7 @@
 - 使用 Webpack 构建脚本，开发模式下默认使用[ESBuild](https://github.com/evanw/esbuild)加速代码编译
 - 发布代码时混淆压缩支持
 - 配置好 SourceMap 和 VSCode 调试支持, 开箱即用
+- 支持发布 WebGL/微信小游戏/抖音小游戏 (使用 [puerts-webgl方案](https://github.com/zombieyang/puerts_unity_webgl_demo))
 
 ### 必备知识
 - Unity 基础操作
@@ -19,17 +20,14 @@
 0. 确保已安装如下所需的开发工具
 	- NodeJS 16+
 	- Visual Studio Code
+		- [轻娱工具集VSCode插件](https://marketplace.visualstudio.com/items?itemName=geequlim.tiny-tool-kit) 提供一系列快捷指令
 	- Unity 2019.4.8f1 及以后版本
-1. 克隆该项目，项目结构如下
-    - `src` TypeScript 脚本目录
-    - `Assets/main.unity` 入口场景
-    - `Assets/Scripts/Resources/scripts` 编译生成的 JavaScript 脚本
-    - `Assets/Scripts/Editor/PuertsConfig.cs` puerts 导出配置
-2. 使用Unity打开项目，执行菜单中的`Puerts -> Generate index.d.ts` 导出 C# API
-	- 注意使用 `global.CS` 模式
-3. 安装依赖：进入项目目录执行 `yarn install`，国内推荐设置淘宝镜像
-4. 使用 VSCode 打开该项目，执行`yarn bundle:dev`命令编译 JavaScript 库
-5. 打开 main 场景，选中其中的 main 节点，点击属性面板中的`重置调试目录`按钮
+1. 克隆该项目，通过 VSCode 和 Unity 打开
+2. 使用Unity执行菜单中的`Puerts -> Generate index.d.ts` 导出 C# API
+3. 在VSCode中打开`轻娱工具集`面板(插件安装完成后侧边栏会多一个图标)
+	- 执行`编译 CLI 工具`命令安装依赖，并构建 CLI 工具
+	- 执行`Unity 开发/dev` 命令启动TS代码持续编译服务
+5. Unity中打开 `main` 场景，选中其中的 main 节点，点击属性面板中的`重置调试目录`按钮
 6. 点击运行，启动游戏，如果一切顺利可以看到如下的日志，大功告成
 	```log
 	已启动 JavaScript 虚拟机
@@ -37,21 +35,17 @@
 		at main (src/main.ts:10:9 )
 	```
 
+#### 主要的目录结构说明
+- `src` TypeScript 脚本目录
+- `tools` 开发工具命令行脚本
+- `Assets/main.unity` 入口场景
+- `Assets/Scripts/Resources/scripts` 编译生成的 JavaScript 脚本
+- `Assets/Scripts/Editor/PuertsConfig.cs` puerts 导出配置
+
 ### 调试
 - Unity 顺利启动JavaScript项目后可在 VSCode 中按 `F5` 键添加到运行中的调试器，之后便可在 TypeScript 文件中设置断点。
 - 如需要调试启动相关的JavaScript代码，请在入口场景中选中`main`节点，勾选 `Wait For Debugger` 选项框。启动游戏后Unity会等待VSCode调试器连接，此时到VSCode中需要调试地方设置好断点后按`F5`连接调试器。
 - 如需调试远程设备（手机真机调试），则打包前确保点击一次`main.unity -> main`节点属性面板的`重置调试目录`将脚本调试目录设置为你本地目录
-
-### npm 命令简介
-| 命令  |  功能 |
-|---|---|
-|bundle:dev| 启动`main.ts`为入口的编译服务，项目中的脚本变动会自动增量编译到 `bundle.js` |
-|bundle:publish| 使用发布模式编译 `bundle.js` |
-|bundle:analyze| 使用发布模式编译 `bundle.js` 并打开源代码分析服务 |
-|test:dev| 启动单元测试的编译服务 |
-
-上述所有命令可以在在VSCode编辑的 NPM 脚本面板中一键启动
-![](screenshot/npm.png)
 
 ### 单元测试
 
