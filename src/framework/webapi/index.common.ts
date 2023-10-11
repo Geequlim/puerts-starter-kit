@@ -2,10 +2,11 @@ interface WebAPIModule {
 	tick?: (now: number) => void;
 	initialize?: () => void;
 	uninitialize?: () => void;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	exports?: Record<string, any>
 }
 
-let registered_modules: WebAPIModule[] = [];
+let registeredModules: WebAPIModule[] = [];
 
 export function initialize(modules: WebAPIModule[]) {
 	Object.defineProperty(globalThis, 'window', { value: globalThis });
@@ -16,24 +17,24 @@ export function initialize(modules: WebAPIModule[]) {
 			Object.defineProperty(window, key, { value: m.exports[key] });
 		}
 	}
-	registered_modules = modules;
+	registeredModules = modules;
 }
 
 export function finalize() {
-	for (const m of registered_modules) {
+	for (const m of registeredModules) {
 		if (m.uninitialize) m.uninitialize();
 	}
 }
 
 export function tick() {
-	for (const m of registered_modules) {
+	for (const m of registeredModules) {
 		if (m.tick && WebAPI.getHighResTimeStamp) {
 			m.tick(WebAPI.getHighResTimeStamp());
 		}
 	}
 }
 
-Object.defineProperty(globalThis, "WebAPI", { value: {
+Object.defineProperty(globalThis, 'WebAPI', { value: {
 	tick,
 	finalize,
 	getHighResTimeStamp: Date.now,

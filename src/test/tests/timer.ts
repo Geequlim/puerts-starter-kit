@@ -1,4 +1,4 @@
-import UnitTest from "test/UnitTest";
+import UnitTest from 'test/UnitTest';
 
 export function testTimer() {
 	const group = 'timer';
@@ -8,7 +8,7 @@ export function testTimer() {
 
 	UnitTest.test('setInterval', new Promise<void>((resolve, reject) => {
 		let sum = 0;
-		let id = setInterval(() => {
+		const id = setInterval(() => {
 			sum++;
 			if (sum >= 3) {
 				resolve();

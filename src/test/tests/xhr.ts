@@ -1,4 +1,4 @@
-import UnitTest from "test/UnitTest";
+import UnitTest from 'test/UnitTest';
 
 enum XMLHttpRequestReadyState {
 	UNSENT = 0,
@@ -22,7 +22,7 @@ export function testXHR() {
 			}
 			reject();
 		};
-		req.open("GET", "https://www.baidu.com");
+		req.open('GET', 'https://www.baidu.com');
 		req.send();
 
 	}), group);
@@ -34,7 +34,7 @@ export function testXHR() {
 		req.onreadystatechange = function (ev: Event) {
 			states.push(this.readyState);
 		};
-		req.addEventListener("loadend", () => {
+		req.addEventListener('loadend', () => {
 			clearTimeout(timer);
 			if (states.length === 4) {
 				resolve();
@@ -42,13 +42,13 @@ export function testXHR() {
 			}
 			reject();
 		});
-		req.open("GET", "https://www.baidu.com");
+		req.open('GET', 'https://www.baidu.com');
 		req.send();
 	}), group);
 
 	UnitTest.test('请求进度', new Promise<void>((resolve, reject) => {
 		const req = new XMLHttpRequest();
-		let timer = setTimeout(reject, 3000);
+		const timer = setTimeout(reject, 3000);
 		req.onprogress = (evt: ProgressEvent) => {
 			if (evt.loaded > 0) {
 				resolve();
@@ -56,7 +56,7 @@ export function testXHR() {
 				clearTimeout(timer);
 			}
 		};
-		req.open("GET", "https://speed.hetzner.de/100MB.bin");
+		req.open('GET', 'https://speed.hetzner.de/100MB.bin');
 		req.send();
 	}), group);
 
@@ -68,7 +68,7 @@ export function testXHR() {
 			clearTimeout(timer);
 			resolve();
 		};
-		req.open("GET", "https://speed.hetzner.de/100MB.bin");
+		req.open('GET', 'https://speed.hetzner.de/100MB.bin');
 		req.send();
 	}), group);
 
@@ -83,7 +83,7 @@ export function testXHR() {
 				reject();
 			}
 		};
-		req.open("GET", "http://www.example.org/example.txt");
+		req.open('GET', 'http://www.example.org/example.txt');
 		req.send();
 	}), group);
 
@@ -94,7 +94,7 @@ export function testXHR() {
 			resolve();
 			clearTimeout(timer);
 		};
-		req.open("GET", "https://speed.hetzner.de/100MB.bin");
+		req.open('GET', 'https://speed.hetzner.de/100MB.bin');
 		req.send();
 		setTimeout(() => req.abort(), 100);
 	}), group);
@@ -106,7 +106,7 @@ export function testXHR() {
 			resolve();
 			clearTimeout(timer);
 		};
-		req.open("GET", "https://speed.hetzner.de/100MB.bin");
+		req.open('GET', 'https://speed.hetzner.de/100MB.bin');
 		req.send();
 		setTimeout(() => req.abort(), 100);
 	}), group);
@@ -122,7 +122,7 @@ export function testXHR() {
 				reject();
 			}
 		};
-		req.open("GET", "https://postman-echo.com/get?foo1=bar1&foo2=bar2");
+		req.open('GET', 'https://postman-echo.com/get?foo1=bar1&foo2=bar2');
 		req.send();
 	}), group);
 
@@ -137,9 +137,9 @@ export function testXHR() {
 				reject();
 			}
 		};
-		req.open("POST", "https://postman-echo.com/post");
+		req.open('POST', 'https://postman-echo.com/post');
 		req.send({
-			"hello": "world"
+			'hello': 'world'
 		});
 	}), group);
 }

@@ -1,6 +1,6 @@
 import { UnityEngine } from 'csharp';
 import { type PlatformPath } from 'path';
-import UnitTest from "test/UnitTest";
+import UnitTest from 'test/UnitTest';
 
 function normalizePath(path: string): string {
 	return path.replace(/\\/g, '/');
@@ -8,17 +8,17 @@ function normalizePath(path: string): string {
 
 export function testNodeJS() {
 	const group = 'NodeJS';
-	let inNodeJS = typeof process.platform === 'string' && typeof process.versions === 'object';
-	UnitTest.test("NodeJS 环境", inNodeJS, group);
+	const inNodeJS = typeof process.platform === 'string' && typeof process.versions === 'object';
+	UnitTest.test('NodeJS 环境', inNodeJS, group);
 	if (inNodeJS) {
 		const os = require('os');
-		UnitTest.test("NodeJS 内置 os 模块", typeof os != 'undefined' && os != null, group);
+		UnitTest.test('NodeJS 内置 os 模块', typeof os != 'undefined' && os != null, group);
 		const path: PlatformPath = require('path');
 		const projectRoot = normalizePath(path.dirname(UnityEngine.Application.dataPath));
 		const cwd = normalizePath(process.cwd());
-		UnitTest.test("工作目录在项目根目录", projectRoot === cwd, group);
+		UnitTest.test('工作目录在项目根目录', projectRoot === cwd, group);
 
-		UnitTest.test("NodeJS 第三方模块", new Promise<unknown>((resolve, reject) => {
+		UnitTest.test('NodeJS 第三方模块', new Promise<unknown>((resolve, reject) => {
 			const yaml = require('js-yaml');
 			if (yaml) {
 				const obj = yaml.load('a: 1') as { a: number; };

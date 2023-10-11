@@ -50,7 +50,7 @@ function print(type: keyof typeof LogType, showStack: boolean, ...args: unknown[
 					if (console[REMAP_FUNC]) {
 						file = console[REMAP_FUNC](file);
 					}
-					let column = matches.length >= 5 ? matches[4] : '0';
+					const column = matches.length >= 5 ? matches[4] : '0';
 					const lineNumber = matches[2];
 					const path = `${workspace}/${file}`.replace(/\/\//g, '/');
 					line = line.replace(/\s\(/, ` (<a href="${path}" line="${lineNumber}" column="${column}">`);

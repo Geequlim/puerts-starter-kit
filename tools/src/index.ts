@@ -1,5 +1,4 @@
 import { createCommand } from 'commander';
-import * as path from 'path';
 import 'source-map-support/register';
 import { injectPuerts2WXMinigame, injectPuerts2WebGL } from './unity/webgl/puerts/injecter';
 

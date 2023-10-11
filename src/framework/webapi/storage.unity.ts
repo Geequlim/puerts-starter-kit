@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { System, UnityEngine } from "csharp";
+import { System, UnityEngine } from 'csharp';
 import { Storage } from './storage';
 
 class LocalStorage extends Storage {
@@ -18,7 +18,7 @@ class LocalStorage extends Storage {
 				stream.Dispose();
 				this._items = JSON.parse(text);
 			} catch (error) {
-				throw new Error("Cannot open storage file " + file);
+				throw new Error('Cannot open storage file ' + file);
 			}
 		}
 	}
@@ -29,12 +29,12 @@ class LocalStorage extends Storage {
 		}
 		const stream = new System.IO.StreamWriter(this.$file);
 		if (stream) {
-			let text = JSON.stringify(this._items, undefined, '\t');
+			const text = JSON.stringify(this._items, undefined, '\t');
 			stream.Write(text);
 			stream.Flush();
 			stream.Dispose();
 		} else {
-			throw new Error("Cannot open storage file " + this.$file);
+			throw new Error('Cannot open storage file ' + this.$file);
 		}
 	}
 }

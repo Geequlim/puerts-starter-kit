@@ -1,4 +1,4 @@
-import UnitTest from "test/UnitTest";
+import UnitTest from 'test/UnitTest';
 
 export function testWebapiMisc() {
 	const group = 'webapi.misc';

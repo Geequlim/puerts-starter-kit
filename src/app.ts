@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 declare const process: { version?: string, release?: { name?: string; }; };
 
 export interface IScriptLauncher {

@@ -14,8 +14,8 @@ const entries = {
 		path: polyfillOutputRoot,
 		filename: 'source-map-support.mjs',
 		externals: {
-			fs: "global polyfill:fs",
-			path: "global polyfill:path",
+			fs: 'global polyfill:fs',
+			path: 'global polyfill:path',
 		}
 	},
 	'console': {
@@ -52,7 +52,7 @@ class HashGeneratorPlugin {
 	}
 
 	apply(compiler) {
-		compiler.hooks.afterEmit.tap("HashGenerator", (compilation) => {
+		compiler.hooks.afterEmit.tap('HashGenerator', (compilation) => {
 			fs.writeFileSync(this.options.output, JSON.stringify({ hash: compilation.fullHash, time: Date.now() }, undefined, '\t'), 'utf-8');
 		});
 	}
@@ -75,7 +75,7 @@ module.exports = (env) => {
 	env.entry = env.entry || 'bundle';
 	env.target = env.target || 'ES2020';
 	env.backend = env.backend || 'v8';
-	console.log("Compile config:", env);
+	console.log('Compile config:', env);
 
 	const entry = entries[env.entry];
 	const isNode = env.backend === 'node';
@@ -97,7 +97,7 @@ module.exports = (env) => {
 		},
 		module: {
 			rules: [
-				{ test: /\.(md|txt|glsl)$/, use: "raw-loader" },
+				{ test: /\.(md|txt|glsl)$/, use: 'raw-loader' },
 				{ test: /\.ya?ml$/, type: 'json', use: 'yaml-loader' },
 				(env.esbuild ? { // ESBuild 构建
 					test: /\.(jsx?|tsx?)$/,
@@ -133,11 +133,11 @@ module.exports = (env) => {
 				new (require('tsconfig-paths-webpack-plugin'))({ configFile: tsConfigFile }),
 			]
 		},
-		mode: env.production ? "production" : "development",
+		mode: env.production ? 'production' : 'development',
 		externals: [
 			{
-				csharp: "global polyfill:csharp",
-				puerts: "global polyfill:puerts",
+				csharp: 'global polyfill:csharp',
+				puerts: 'global polyfill:puerts',
 			},
 			entry.externals,
 		].filter(e => e),
@@ -145,7 +145,7 @@ module.exports = (env) => {
 
 	if (isNode) {
 		target.target = 'node';
-		target.externals.push( nodeExternals({}) );
+		target.externals.push(nodeExternals({}));
 	} else {
 		target.plugins.push(new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] }));
 	}

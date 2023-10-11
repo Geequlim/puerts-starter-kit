@@ -18,9 +18,11 @@ function runEntry(entry: ITestEntry): Promise<boolean> {
 	return new Promise((resolve, reject) => {
 		switch (typeof(entry.blcok)) {
 			case 'boolean':
-				return resolve(entry.blcok);
+				resolve(entry.blcok);
+				break;
 			case 'function':
-				return resolve(entry.blcok());
+				resolve(entry.blcok());
+				break;
 			case 'object':
 				if (entry.blcok instanceof Promise) {
 					entry.blcok.then(()=>{
@@ -31,7 +33,8 @@ function runEntry(entry: ITestEntry): Promise<boolean> {
 				}
 				break;
 			default:
-				return resolve(false);
+				resolve(false);
+				break;
 		}
 	});
 }

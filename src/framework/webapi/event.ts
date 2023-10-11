@@ -147,6 +147,7 @@ interface ProgressEventInit extends EventInit {
 }
 
 /** Events measuring progress of an underlying process, like an HTTP request (for an XMLHttpRequest, or the loading of the underlying resource of an <img>, <audio>, <video>, <style> or <link>). */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export class ProgressEvent<T extends EventTarget = EventTarget> extends Event {
 	get lengthComputable(): boolean { return this.$lengthComputable; }
 	protected $lengthComputable: boolean;
@@ -214,7 +215,7 @@ export class EventTarget {
 			this.$listeners[type] = [];
 		}
 		let recorder: EventListenerRecord = { listener };
-		if (typeof options === "boolean") {
+		if (typeof options === 'boolean') {
 			recorder.capture = options;
 		} else if (typeof options === 'object') {
 			recorder = { ...options, listener };
@@ -229,13 +230,13 @@ export class EventTarget {
 	public dispatchEvent(event: Event): boolean {
 
 		if (!event || typeof event.type != 'string') return true;
-		const origin_recorders = this.$listeners[event.type];
-		if (!origin_recorders) return true;
+		const originRecorders = this.$listeners[event.type];
+		if (!originRecorders) return true;
 
-		const recorders = origin_recorders.slice();
+		const recorders = originRecorders.slice();
 		if (!recorders.length) return !event.defaultPrevented;
 		event['$target'] = this;
-		let once_listeners: EventListenerRecord[] = [];
+		const onceListeners: EventListenerRecord[] = [];
 		for (const recorder of recorders) {
 			let listener: EventListener = null;
 			if ((recorder.listener as EventListenerObject).handleEvent) {
@@ -248,13 +249,13 @@ export class EventTarget {
 				listener.call(this, event);
 			}
 			if (recorder.once) {
-				once_listeners.push(recorder);
+				onceListeners.push(recorder);
 			}
 			if (event.defaultPrevented) break;
 		}
 
-		for (let i = 0; i < once_listeners.length; i++) {
-			origin_recorders.splice(origin_recorders.indexOf(once_listeners[i]), 1);
+		for (let i = 0; i < onceListeners.length; i++) {
+			originRecorders.splice(originRecorders.indexOf(onceListeners[i]), 1);
 		}
 		return !event.defaultPrevented;
 	}
@@ -269,7 +270,7 @@ export class EventTarget {
 			const recorder = recorders[i];
 			if (recorder.listener === listener) {
 				let sameOptions = true;
-				if (typeof options === "boolean") {
+				if (typeof options === 'boolean') {
 					sameOptions = recorder.capture == options;
 				} else if (typeof options === 'object') {
 					sameOptions = recorder.capture == options.capture;

@@ -1,88 +1,90 @@
+// eslint-disable-next-line @typescript-eslint/ban-types
 type TimerHandler = Function;
 
 interface Timer {
 	handler: TimerHandler;
 	timeout: number;
-	next_time?: number;
+	nextTime?: number;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	args?: any[];
 	oneshot?: boolean;
 }
-let global_timer_id = 0;
+let globalTimerID = 0;
 
-const pending_timers = new Map<number, Timer>();
-const processing_timers = new Map<number, Timer>();
-const removing_timers = new Set<number>();
+const pendingTimers = new Map<number, Timer>();
+const processingTimers = new Map<number, Timer>();
+const removingTimers = new Set<number>();
 
-function timer_loop() {
+function timerLoop() {
 	const now = WebAPI.getHighResTimeStamp();
 
-	for (const [id, timer] of pending_timers) {
-		processing_timers.set(id, timer);
+	for (const [id, timer] of pendingTimers) {
+		processingTimers.set(id, timer);
 	}
-	pending_timers.clear();
+	pendingTimers.clear();
 
-	for (const id of removing_timers) {
-		processing_timers.delete(id);
+	for (const id of removingTimers) {
+		processingTimers.delete(id);
 	}
-	removing_timers.clear();
+	removingTimers.clear();
 
-	for (const [id, timer] of processing_timers) {
-		if (timer.next_time <= now) {
+	for (const [id, timer] of processingTimers) {
+		if (timer.nextTime <= now) {
 			try {
 				if (timer.handler) timer.handler.apply(null, timer.args);
 			} catch (error) {
 				console.error(`Error in timer handler: ${error.message}\n${error.stack}`);
 			}
 			if (timer.oneshot) {
-				removing_timers.add(id);
+				removingTimers.add(id);
 			} else {
-				timer.next_time = now + timer.timeout;
+				timer.nextTime = now + timer.timeout;
 			}
 		}
 	}
-	timer_loop_id = requestAnimationFrame(timer_loop);
+	timerLoopID = requestAnimationFrame(timerLoop);
 }
 
-function make_timer(handler: TimerHandler, timeout?: number, ...args: any[]): Timer {
+function makeTimer(handler: TimerHandler, timeout?: number, ...args: any[]): Timer {
 	return {
 		handler,
 		timeout,
-		next_time: WebAPI.getHighResTimeStamp() + (timeout || 0),
+		nextTime: WebAPI.getHighResTimeStamp() + (timeout || 0),
 		args
 	};
 }
 
-function pend_timer(timer: Timer): number {
-	pending_timers.set(++global_timer_id, timer);
-	return global_timer_id;
+function pendTimer(timer: Timer): number {
+	pendingTimers.set(++globalTimerID, timer);
+	return globalTimerID;
 }
 
 function setTimeout(handler: TimerHandler, timeout?: number, ...args: any[]): number {
-	const timer = make_timer(handler, timeout, ...args);
+	const timer = makeTimer(handler, timeout, ...args);
 	timer.oneshot = true;
-	return pend_timer(timer);
+	return pendTimer(timer);
 }
 
 function clearTimeout(handle?: number): void {
-	removing_timers.add(handle);
+	removingTimers.add(handle);
 }
 
 function setInterval(handler: TimerHandler, timeout?: number, ...args: any[]): number {
-	return pend_timer(make_timer(handler, timeout, ...args));
+	return pendTimer(makeTimer(handler, timeout, ...args));
 }
 
 function clearInterval(handle?: number): void {
-	removing_timers.add(handle);
+	removingTimers.add(handle);
 }
 
-let timer_loop_id = 0;
+let timerLoopID = 0;
 
 export default {
 	initialize() {
-		timer_loop_id = requestAnimationFrame(timer_loop);
+		timerLoopID = requestAnimationFrame(timerLoop);
 	},
 	uninitialize() {
-		cancelAnimationFrame(timer_loop_id);
+		cancelAnimationFrame(timerLoopID);
 	},
 	exports: {
 		setTimeout,

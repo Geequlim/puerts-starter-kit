@@ -1,21 +1,23 @@
-import { AddEventListenerOptions, Event, EventListenerOptions, EventTarget, ProgressEvent } from "../event";
-import { IURL } from "./url";
-export type XMLHttpRequestResponseType = "" | "arraybuffer" | "blob" | "document" | "json" | "text";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable camelcase */
+import { AddEventListenerOptions, Event, EventListenerOptions, EventTarget, ProgressEvent } from '../event';
+import { IURL } from './url';
+export type XMLHttpRequestResponseType = '' | 'arraybuffer' | 'blob' | 'document' | 'json' | 'text';
 export type XMLHttpRequestMethod = 'CONNECT' | 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT' | 'TRACE';
 export type BodyInit = string | Record<string, any>;
 
 export interface XMLHttpRequestEventTargetEventMap {
-	"abort": ProgressEvent<XMLHttpRequestEventTarget>;
-	"error": ProgressEvent<XMLHttpRequestEventTarget>;
-	"load": ProgressEvent<XMLHttpRequestEventTarget>;
-	"loadend": ProgressEvent<XMLHttpRequestEventTarget>;
-	"loadstart": ProgressEvent<XMLHttpRequestEventTarget>;
-	"progress": ProgressEvent<XMLHttpRequestEventTarget>;
-	"timeout": ProgressEvent<XMLHttpRequestEventTarget>;
+	'abort': ProgressEvent<XMLHttpRequestEventTarget>;
+	'error': ProgressEvent<XMLHttpRequestEventTarget>;
+	'load': ProgressEvent<XMLHttpRequestEventTarget>;
+	'loadend': ProgressEvent<XMLHttpRequestEventTarget>;
+	'loadstart': ProgressEvent<XMLHttpRequestEventTarget>;
+	'progress': ProgressEvent<XMLHttpRequestEventTarget>;
+	'timeout': ProgressEvent<XMLHttpRequestEventTarget>;
 }
 
 export interface XMLHttpRequestEventMap extends XMLHttpRequestEventTargetEventMap {
-	"readystatechange": Event;
+	'readystatechange': Event;
 }
 
 export class XMLHttpRequestEventTarget extends EventTarget {
@@ -66,7 +68,7 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 		if (value != this.$readyState) {
 			this.$readyState = value;
 			if (this.onreadystatechange) {
-				let event = new Event('readystatechange');
+				const event = new Event('readystatechange');
 				this.onreadystatechange.call(this, event);
 				this.dispatchEvent(event);
 			}
@@ -107,8 +109,8 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	 *
 	 * Throws an "InvalidStateError" DOMException if responseType is not the empty string or "document".
 	 */
-	get responseXML(): string { return null; };
-	get status(): number { return 0; };
+	get responseXML(): string { return null; }
+	get status(): number { return 0; }
 	readonly statusText: string;
 
 	/**
@@ -136,7 +138,7 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	 */
 	abort(): void { }
 
-	getAllResponseHeaders(): string { return ""; }
+	getAllResponseHeaders(): string { return ''; }
 
 	getResponseHeader(name: string): string | null { return null; }
 
@@ -214,7 +216,7 @@ export class XMLHttpRequestBase extends XMLHttpRequestEventTarget {
 	protected $dispatch_event(type: keyof XMLHttpRequestEventTargetEventMap) {
 		let event: Event = undefined;
 		if (type === 'progress') {
-			let evt = new ProgressEvent('progress', this.$get_progress());
+			const evt = new ProgressEvent('progress', this.$get_progress());
 			event = evt;
 		} else {
 			event = new Event(type);

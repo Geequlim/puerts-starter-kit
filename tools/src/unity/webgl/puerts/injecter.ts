@@ -1,8 +1,7 @@
 import fs from 'fs';
-const babel = require('./babel');
-import { getFiles } from '../../../utils';
 import path from 'path';
-import { async } from 'fast-glob';
+import { getFiles } from '../../../utils';
+const babel = require('./babel');
 
 export async function injectPuerts2WebGL(root: string) {
 	const frameworkJS = path.join(root, 'Build/webgl.framework.js');
@@ -35,7 +34,7 @@ export async function injectPuerts2WXMinigame(root: string) {
 	const dir = path.join(root, 'puerts_minigame_js_resources');
 	for (const file of getJSModules()) {
 		const filename = path.basename(file);
-		const basename = path.basename(path.dirname(file))
+		const basename = path.basename(path.dirname(file));
 		const outfile = path.join(dir, basename, filename.endsWith('.js') ? filename : `${filename}.js`);
 		if (!fs.existsSync(path.dirname(outfile))) {
 			fs.mkdirSync(path.dirname(outfile), { recursive: true });
@@ -74,7 +73,7 @@ async function generateJSResources(modules: string[]) {
 		const file = modules[i];
 		const code = codes[i];
 		const filename = path.basename(file);
-		const basename = path.basename(path.dirname(file))
+		const basename = path.basename(path.dirname(file));
 		PUERTS_JS_RESOURCES[`${basename}/${filename}`] = code;
 	}
 
@@ -89,8 +88,8 @@ ${Object.keys(PUERTS_JS_RESOURCES).map(resourceName => `"${resourceName}": ${PUE
 async function buildForBrowser(file: string) {
 	const src = fs.readFileSync(file, 'utf-8');
 	const ret = await babel.transform(src, {
-		presets: [["@babel/preset-env", { targets: { chrome: "84", esmodules: false } }]]
+		presets: [['@babel/preset-env', { targets: { chrome: '84', esmodules: false } }]]
 	});
-	return `(function(exports, require, module, __filename, __dirname) {${ret.code}})`
-};
+	return `(function(exports, require, module, __filename, __dirname) {${ret.code}})`;
+}
 

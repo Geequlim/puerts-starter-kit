@@ -1,8 +1,9 @@
-import { System, UnityEngine, tiny } from "csharp";
-import HttpStatusCode from "http-status-codes";
-import MIMEType from "whatwg-mimetype";
-import { IURL, parse_url } from "./url";
-import { BodyInit, XMLHttpRequestBase, XMLHttpRequestEventTarget, XMLHttpRequestMethod, XMLHttpRequestReadyState, XMLHttpRequestUpload } from "./xhr.common";
+/* eslint-disable camelcase */
+import { System, UnityEngine } from 'csharp';
+import HttpStatusCode from 'http-status-codes';
+import MIMEType from 'whatwg-mimetype';
+import { IURL, parseUrl } from './url';
+import { BodyInit, XMLHttpRequestBase, XMLHttpRequestEventTarget, XMLHttpRequestMethod, XMLHttpRequestReadyState, XMLHttpRequestUpload } from './xhr.common';
 declare module 'csharp' {
 	namespace UnityEngine {
 		namespace Networking {
@@ -49,7 +50,7 @@ class UnityXMLHttpRequest extends XMLHttpRequestBase {
 	getAllResponseHeaders(): string {
 		let text = '';
 		if (this.$internalResponsHeaders) {
-			let enumerator = this.$internalResponsHeaders.GetEnumerator();
+			const enumerator = this.$internalResponsHeaders.GetEnumerator();
 			while (enumerator.MoveNext()) {
 				text += `${enumerator.Current.Key}: ${enumerator.Current.Value}\r\n`;
 			}
@@ -71,7 +72,7 @@ class UnityXMLHttpRequest extends XMLHttpRequestBase {
 	}
 
 	open(method: XMLHttpRequestMethod, url: string, async?: boolean, username?: string | null, password?: string | null): void {
-		this.$url = parse_url(url);
+		this.$url = parseUrl(url);
 		if (!this.url.port) {
 			this.$url.port = this.url.protocal === 'https' ? 443 : 80;
 		}
@@ -105,7 +106,7 @@ class UnityXMLHttpRequest extends XMLHttpRequestBase {
 			this.$unityRequest.disposeCertificateHandlerOnDispose = false;
 			this.$unityRequest.certificateHandler = UnityEngine.Networking.UnityWebRequest.certificateHandler;
 		}
-		for (let key of Object.getOwnPropertyNames(this.$requestHeaders)) {
+		for (const key of Object.getOwnPropertyNames(this.$requestHeaders)) {
 			const value = this.$requestHeaders[key];
 			this.$unityRequest.SetRequestHeader(key, value);
 		}
@@ -193,7 +194,7 @@ class UnityXMLHttpRequest extends XMLHttpRequestBase {
 
 	protected $process_response() {
 		if (this.responseType === undefined) {
-			const mime = new MIMEType(this.$overridedMime || this.getResponseHeader("Content-Type") || 'text/plain');
+			const mime = new MIMEType(this.$overridedMime || this.getResponseHeader('Content-Type') || 'text/plain');
 			if (mime.type === 'application' && mime.subtype === 'json') {
 				this.responseType = 'json';
 			} else if (mime.type === 'arraybuffer') {
@@ -208,7 +209,7 @@ class UnityXMLHttpRequest extends XMLHttpRequestBase {
 			case 'text':
 				this.$response = this.responseText;
 				break;
-			case 'json':
+			case 'json': {
 				const text = this.responseText;
 				if (text) {
 					try { this.$response = JSON.parse(text);
@@ -219,9 +220,11 @@ class UnityXMLHttpRequest extends XMLHttpRequestBase {
 				} else {
 					this.$response = null;
 				}
-				break;
+
+			} break;
 			case 'arraybuffer':
 				this.$response = this.$unityRequest.downloadHandler ? this.$unityRequest.downloadHandler.data : null;
+				break;
 			default:
 				this.$response = null;
 				break;

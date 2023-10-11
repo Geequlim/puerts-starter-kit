@@ -30,7 +30,15 @@ develop:
           title: CLI 编译服务
           description: 启动编译服务
           command: yarn webpack --config tools/webpack.config.js --watch --env esbuild=true target=ES2020
-
+    - name: 优化
+      description: 静态代码分析
+      actions:
+        - name: lint
+          description: 执行 ESLint 代码分析
+          command: yarn eslint . --ext .ts
+        - name: lint:fix
+          description: 执行 ESLint 自动修正
+          command: yarn eslint . --ext .ts --fix
 publish:
   actions:
     - name: Unity WebGL
