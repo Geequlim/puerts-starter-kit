@@ -21,6 +21,7 @@
 	- NodeJS 16+
 	- Visual Studio Code
 		- [轻娱工具集VSCode插件](https://marketplace.visualstudio.com/items?itemName=geequlim.tiny-tool-kit) 提供一系列快捷指令
+		- ![轻娱工具集示意图](./misc/screenshot/轻娱工具集.png)
 	- Unity 2019.4.8f1 及以后版本
 1. 克隆该项目，通过 VSCode 和 Unity 打开
 2. 使用Unity执行菜单中的`Puerts -> Generate index.d.ts` 导出 C# API
@@ -54,7 +55,7 @@
 执行 test 单元测试后编译单元测试代码，Unity中运行项目可以进行单元测试
 <details><summary>单元测试截图</summary>
 
-![](screenshot/unittest.png)
+![单元测试截图](./misc/screenshot/unittest.png)
 
 </details>
 
