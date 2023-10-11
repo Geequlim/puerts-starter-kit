@@ -1,5 +1,5 @@
 # WebAPI
-Minimal Web API support for godot and Unity
+Minimal Web API support for Unity
 
 ### Implemented Web APIs
 - WindowOrWorkerGlobalScope

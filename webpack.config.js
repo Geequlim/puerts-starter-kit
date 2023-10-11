@@ -10,7 +10,7 @@ const polyfillOutputRoot = 'Assets/Scripts/Resources/polyfills';
 
 const entries = {
 	'source-map-support': {
-		input: 'src/addons/polyfills/source-map-support.unity.ts',
+		input: 'src/framework/polyfills/source-map-support.unity.ts',
 		path: polyfillOutputRoot,
 		filename: 'source-map-support.mjs',
 		externals: {
@@ -19,12 +19,12 @@ const entries = {
 		}
 	},
 	'console': {
-		input: 'src/addons/polyfills/console.unity.ts',
+		input: 'src/framework/polyfills/console.unity.ts',
 		path: polyfillOutputRoot,
 		filename: 'console.mjs'
 	},
 	webapi: {
-		input: 'src/addons/webapi/index.unity.ts',
+		input: 'src/framework/webapi/index.unity.ts',
 		path: polyfillOutputRoot,
 		filename: 'webapi.mjs'
 	},
@@ -40,11 +40,6 @@ const entries = {
 	},
 	test: {
 		input: 'src/test/index.ts',
-		path: scriptOutputRoot,
-		filename: 'bundle.mjs'
-	},
-	'test-node': {
-		input: 'src/test/index.node.ts',
 		path: scriptOutputRoot,
 		filename: 'bundle.mjs'
 	},

@@ -17,8 +17,8 @@ namespace tiny
 #if !UNITY_WEBGL || UNITY_EDITOR
 			"polyfills/console.mjs",
 			"polyfills/webapi.mjs",
-#endif
 			"polyfills/source-map-support.mjs",
+#endif
 		};
 		protected string Bootstrap = "scripts/bootstrap.mjs";
 

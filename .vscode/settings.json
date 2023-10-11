@@ -1,20 +1,21 @@
 {
-	"files.associations": {
-		"*.tiny": "yaml",
-		"*.yaml.txt": "yaml",
-		"*.js.txt": "javascript",
-		"*.meta": "yaml",
-		"*.manifest": "yaml",
-		"*.asset": "yaml",
-		"project.tiny": "yaml"
-	},
-	"files.exclude":
-	{
-		"Library": true,
-		"Logs": true,
-		"Temp": true,
-		"node_modules": true
-	},
-	"omnisharp.useModernNet": false,
-	"omnisharp.dotnetPath": "latest"
+    "files.associations": {
+        "*.tiny": "yaml",
+        "*.yaml.txt": "yaml",
+        "*.js.txt": "javascript",
+        "*.meta": "yaml",
+        "*.manifest": "yaml",
+        "*.asset": "yaml",
+        "project.tiny": "yaml"
+    },
+    "files.exclude": {
+        "Library": true,
+        "Logs": true,
+        "Temp": true,
+        "node_modules": true,
+        "qrcodes": true
+    },
+    "omnisharp.useModernNet": false,
+    "omnisharp.dotnetPath": "latest",
+    "dotnet.defaultSolution": "ts-game-kit.sln"
 }

@@ -6,7 +6,7 @@ namespace tiny
 	public class main : JavaScriptLauncher
 	{
 		// 等待数帧，让 splash 展示出来，否则在JS端界面创建好之前是卡住黑屏状态
-		private int frameToWait = 20; // Unity 的闪屏背景过渡要这么久，不然会卡闪屏和 splash 对象在过渡状态
+		private int frameToWait = 10; // Unity 的闪屏背景过渡要这么久，不然会卡闪屏和 splash 对象在过渡状态
 		public UnityEngine.Transform splash;
 		static main() { }
 

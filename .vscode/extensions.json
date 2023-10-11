@@ -4,6 +4,8 @@
 		"geequlim.tiny-tool-kit",
 		"dbaeumer.vscode-eslint",
 		"eamodio.gitlens",
-		"redhat.vscode-yaml"
+		"redhat.vscode-yaml",
+		"visualstudiotoolsforunity.vstuc",
+		"ms-dotnettools.csdevkit",
 	]
 }

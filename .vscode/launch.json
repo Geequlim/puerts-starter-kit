@@ -1,17 +1,13 @@
 {
-	// 使用 IntelliSense 了解相关属性。
-	// 悬停以查看现有属性的描述。
-	// 欲了解更多信息，请访问: https://go.microsoft.com/fwlink/?linkid=830387
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Unity Editor",
-			"type": "unity",
-			"path": "${workspaceFolder}/Library/EditorInstance.json",
-			"request": "launch"
+			"name": "C# | Unity Editor",
+			"type": "vstuc",
+			"request": "attach"
 		},
 		{
-			"name": "Unity Editor (TypeScript)",
+			"name": "TypeScript | Unity Editor",
 			"port": 5556,
 			"type": "node",
 			"request": "attach",
@@ -22,6 +18,32 @@
 				"webpack:///./~/*": "${workspaceFolder}/node_modules/*",
 				"webpack-internal:///./*": "${workspaceFolder}/*",
 				"webpack-internal:///./~/*": "${workspaceFolder}/node_modules/*"
+			}
+		},
+		{
+			"name": "WebGL | Chrome",
+			"type": "chrome",
+			"request": "launch",
+			"url": "http://localhost:3100/Build/webgl?dev=true",
+			"osx": {
+				"runtimeExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+			},
+			"linux": {
+				"runtimeExecutable": "/usr/sbin/google-chrome-stable"
+			},
+			"runtimeArgs": [
+				"--new-window",
+				"--disk-cache-size=1"
+			],
+			"sourceMaps": true,
+			"webRoot": "${workspaceRoot}",
+			"disableNetworkCache": true,
+			"sourceMapPathOverrides": {
+				"webpack:///./*": "${workspaceRoot}/*",
+				"webpack:///src/*": "${webRoot}/*",
+				"webpack:///*": "*",
+				"webpack:///./~/*": "${webRoot}/node_modules/*",
+				"meteor://💻app/*": "${webRoot}/*"
 			}
 		}
 	]

@@ -23,7 +23,7 @@ var global = (function() { return this; })(); var window = global;
 	injectJSCode(PUERTS_JS_RESOURCES_CODE, 'PUERTS_JS_RESOURCES 定义');
 	injectJSCode(fs.readFileSync('tools/src/unity/webgl/puerts/template/puerts-runtime.js', 'utf-8'), 'puerts-runtime.js');
 
-	
+
 	frameworkJSContent = `${HEADER}
 ${injectContent}
 ${frameworkJSContent}
@@ -61,7 +61,6 @@ function getJSModules() {
 	const modules = getFiles([
 		'Library/PackageCache/com.tencent.puerts.core@*/Runtime/Resources/puerts/*.mjs',
 		'Assets/Scripts/Resources/polyfills/puerts.tiny.mjs',
-		'Assets/Scripts/Resources/polyfills/source-map-support.mjs',
 		'Assets/Scripts/Resources/scripts/bootstrap.mjs',
 		'Assets/Scripts/Resources/scripts/bundle.mjs'
 	]);
@@ -78,7 +77,7 @@ async function generateJSResources(modules: string[]) {
 		const basename = path.basename(path.dirname(file))
 		PUERTS_JS_RESOURCES[`${basename}/${filename}`] = code;
 	}
-	
+
 	const PUERTS_JS_RESOURCES_CODE = `\
 window.PUERTS_JS_RESOURCES = {
 ${Object.keys(PUERTS_JS_RESOURCES).map(resourceName => `"${resourceName}": ${PUERTS_JS_RESOURCES[resourceName]}`).join(',\n')}
