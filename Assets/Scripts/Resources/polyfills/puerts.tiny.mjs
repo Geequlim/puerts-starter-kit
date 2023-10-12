@@ -2,9 +2,21 @@ const csharp = globalThis.CS;
 
 const fs = {
 	existsSync(path) {
-		return csharp.System.IO.File.Exists(path);
+		let exists = csharp.System.IO.File.Exists(path);
+		if (!exists && path.endsWith('.mjs')) { // 特殊处理一下 SourceMap 解析
+			exists = csharp.System.IO.File.Exists(csharp.tiny.main.inst.DebuggerRoot + '/' + path);
+		}
+		return exists;
 	},
 	readFileSync(path) {
+		let exists = csharp.System.IO.File.Exists(path);
+		if (!exists && path.endsWith('.mjs')) { // 特殊处理一下 SourceMap 解析
+			const file = csharp.tiny.main.inst.DebuggerRoot + '/' + path;
+			if (csharp.System.IO.File.Exists(file)) {
+				return csharp.System.IO.File.ReadAllText(file);
+			}
+			throw new Error(`File not found: ${path}`);
+		}
 		return csharp.System.IO.File.ReadAllText(path);
 	},
 };

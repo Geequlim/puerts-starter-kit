@@ -43,7 +43,7 @@ namespace tiny
 		{
 			DontDestroyOnLoad(gameObject);
 			inst = this;
-			loader = new JavaScriptLoader(DebuggerRoot);
+			loader = new JavaScriptLoader(String.Empty);
 #if UNITY_WEBGL && !UNITY_EDITOR
 			vm = Puerts.WebGL.MainEnv.Get();
 #else
