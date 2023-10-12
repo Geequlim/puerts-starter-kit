@@ -13,6 +13,10 @@ Assets/\[plugins\].meta
 obj/
 *.csproj
 *.sln
+*.mjs.LICENSE.txt
+*.mjs.LICENSE.txt.meta
+*.js.LICENSE.txt
+*.js.LICENSE.txt.meta
 
 Assets/res/
 Assets/res.meta

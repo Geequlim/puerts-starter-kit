@@ -47,7 +47,8 @@ namespace tiny
 
 		public string GetScriptDebugPath(string filepath)
 		{
-			return System.IO.Path.Combine(debugRoot, filepath).Replace("\\", "/");
+			return filepath.Replace('\\', '/');
+			// return System.IO.Path.Combine(debugRoot, filepath).Replace("\\", "/");
 		}
 
 		public string ReadFile(string filepath, out string debugpath)
