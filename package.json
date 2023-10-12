@@ -23,6 +23,7 @@
 		"esbuild": "^0.19.2",
 		"esbuild-loader": "^4.0.2",
 		"eslint": "^8.51.0",
+		"esm-hook": "^0.1.4",
 		"fast-glob": "^3.3.1",
 		"fork-ts-checker-webpack-plugin": "^8.0.0",
 		"http-server": "^14.1.1",

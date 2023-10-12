@@ -4,6 +4,7 @@ using System.IO;
 using System.Reflection;
 using NUnit.Framework.Constraints;
 using Unity.CodeEditor;
+using System.Diagnostics;
 
 namespace UnityEditor.Console
 {
@@ -105,7 +106,11 @@ namespace UnityEditor.Console
 
 		public static bool OpenFileInIDE(string filepath, int line, int column)
 		{
-			return CodeEditor.CurrentEditor.OpenProject(filepath, line, column);
+			Process process = new Process();
+			process.StartInfo.FileName = "code";
+			process.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+			process.StartInfo.Arguments = $"--goto \"{filepath}:{line}:{column}\"";
+			return process.Start();
 		}
 	}
 }

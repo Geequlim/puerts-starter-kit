@@ -1,16 +1,19 @@
 const path = require('path');
 const workspace = path.resolve(__dirname);
 const { makeBuildAction, parseBuildEnv } = require('./webpack/webpack-tools');
+const nodeExternals = require('webpack-node-externals');
 
 const entries = {
 	tools: {
-		input: 'src/index.ts',
+		input: ['source-map-support/register', 'esm-hook', 'src/index.ts'],
 		path: 'bin',
 		filename: 'cli.js',
 		tsConfigFile: 'tsconfig.json',
 		rawOptions: {
 			target: 'node',
-			externalsPresets: { node: true },
+			devtool: false,
+			mode: 'none',
+			externals: [nodeExternals({})],
 			experiments: {
 				asyncWebAssembly: true,
 			},
