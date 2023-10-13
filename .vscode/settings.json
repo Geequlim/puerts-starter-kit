@@ -15,7 +15,10 @@
 		"ProjectSettings": true,
 		"UserSettings": true,
 		"node_modules": true,
-		"qrcodes": true
+		"qrcodes": true,
+		"obj": true,
+		"*.csproj": true,
+		"*.sln": true
 	},
 	"files.eol": "\n",
 	"editor.tabSize": 4,
