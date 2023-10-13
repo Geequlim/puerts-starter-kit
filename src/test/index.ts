@@ -1,4 +1,4 @@
-import { IScriptLauncher, JavaScriptApplication } from 'app';
+import { JSEngineBridge, JavaScriptApplication } from 'app';
 import { GameTest } from './GameTest';
 
 export class TestApplication extends JavaScriptApplication {
@@ -8,6 +8,6 @@ export class TestApplication extends JavaScriptApplication {
 	}
 }
 
-export default function main(lancher: IScriptLauncher) {
+export default function main(lancher: JSEngineBridge) {
 	return new TestApplication(lancher);
 }

@@ -25,4 +25,5 @@
 	"dotnet.defaultSolution": "ts-game-kit.sln",
 	"editor.codeActionsOnSave": { "source.fixAll.eslint": true },
 	"typescript.tsdk": "node_modules/typescript/lib",
+	"dotnet.preferCSharpExtension": true,
 }

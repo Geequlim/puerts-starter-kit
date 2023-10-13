@@ -1,5 +1,7 @@
-import { IScriptLauncher, JavaScriptApplication } from 'app';
+import { JSEngineBridge, JavaScriptApplication } from 'app';
+import { tiny } from 'csharp';
 
-export default function main(lancher: IScriptLauncher) {
-	return new JavaScriptApplication(lancher);
+function main(bridge: JSEngineBridge) {
+	return new JavaScriptApplication(bridge);
 }
+main(tiny.main.inst);

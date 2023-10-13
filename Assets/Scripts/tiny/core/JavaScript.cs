@@ -1,4 +1,3 @@
-using System.IO;
 using System;
 using UnityEngine;
 
@@ -54,15 +53,12 @@ namespace tiny
 			{
 				await vm.WaitDebuggerAsync();
 			}
-			// vm.Eval(String.Format(@"
-			// 	Object.defineProperty(globalThis, '__tiny_DebuggerRoot', { value: '{0}', enumerable: true, configurable: false, writable: false });
-			// ", DebuggerRoot));
+
 			// 加载启动JS脚本, 执行脚本 main 函数
 			foreach (var polyfill in this.Polyfills) {
 				vm.ExecuteModule(polyfill);
 			}
-			var javascript_main = vm.ExecuteModule<JavaScriptMain>(Bootstrap, "default");
-			javascript_main(this);
+			vm.ExecuteModule<JavaScriptMain>(Bootstrap, "default");
 		}
 
 		protected virtual void RegisterClasses(Puerts.JsEnv vm)
@@ -80,7 +76,7 @@ namespace tiny
 			vm.UsingFunc<Vector3>();
 			vm.UsingAction<UnityEngine.SceneManagement.Scene, UnityEngine.SceneManagement.LoadSceneMode>();
 			vm.UsingAction<UnityEngine.SceneManagement.Scene, UnityEngine.SceneManagement.Scene>();
-			vm.UsingAction<UnityEngine.AsyncOperation>();
+			vm.UsingAction<AsyncOperation>();
 		}
 
 		protected void FixedUpdate()
