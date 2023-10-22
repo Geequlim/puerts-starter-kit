@@ -1,5 +1,5 @@
 
-export type TestBlock = boolean | (() => boolean) | Promise<unknown>;
+export type TestBlock = boolean | (() => boolean) | Promise<unknown> | (() => Promise<unknown>);
 
 interface ITestEntry {
 	description: string;
@@ -15,14 +15,23 @@ function test(description: string, blcok: TestBlock, group: string = 'default') 
 }
 
 function runEntry(entry: ITestEntry): Promise<boolean> {
-	return new Promise((resolve, reject) => {
+	return new Promise(async (resolve, reject) => {
 		switch (typeof(entry.blcok)) {
 			case 'boolean':
 				resolve(entry.blcok);
 				break;
-			case 'function':
-				resolve(entry.blcok());
-				break;
+			case 'function': {
+				const ret = entry.blcok();
+				if (typeof ret === 'boolean') {
+					resolve(ret);
+				} else {
+					ret.then((v)=>{
+						resolve(v === false ? false: true);
+					}).catch(err=>{
+						resolve(false);
+					});
+				}
+			} break;
 			case 'object':
 				if (entry.blcok instanceof Promise) {
 					entry.blcok.then(()=>{
@@ -49,12 +58,14 @@ async function run() {
 		for (let i = 0; i < entries.length; i++) {
 			const entry = entries[i];
 			const ret = await runEntry(entry);
+			const len = entries.length.toString();
+			const current = (i + 1).toString().padStart(len.length, '0');
 			if (ret) {
 				passed++;
 				groupCount++;
-				console.log(`\t[${i+1}/${entries.length}][ √ ] ${entry.description}`);
+				console.log(`\t[${current}/${len}][ √ ] ${entry.description}`);
 			} else {
-				console.error(`\t[${i+1}/${entries.length}][ X ] ${entry.description}`);
+				console.error(`\t[${current}/${len}][ X ] ${entry.description}`);
 			}
 		}
 		const logFunc2 = groupCount == entries.length ? console.log: console.warn;

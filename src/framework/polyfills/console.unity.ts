@@ -12,7 +12,8 @@ const emptyResources = new UnityEngine.Object();
 const isUnityEditor = UnityEngine.Application.isEditor;
 const REMAP_FUNC = 'STACK_REMAP';
 console[REMAP_FUNC] = (path: string) => {
-	let r = path.split('webpack:///')[1] || path;
+	const parts = path.split('webpack:///');
+	let r = parts[parts.length - 1] || path;
 	r = r.replace(UnityEngine.Application.dataPath, 'Assets');
 	r = r.replace('webpack-internal:///./', '');
 	return r;
@@ -44,18 +45,20 @@ function print(type: keyof typeof LogType, showStack: boolean, ...args: unknown[
 			let line = stacks[i];
 			message += '\n';
 			if (isUnityEditor) {
-				const matches = line.match(/at\s.*?\s\((.*?)\:(\d+)(:(\d+))?/);
+				const matches = line.match(/at\s(.*?\s\()?(.*?)(:(\d+))(:(\d+))?/);
 				if (matches && matches.length >= 3) {
-					let file = matches[1].replace(/\\/g, '/');
+					let file = matches[2].replace(/\\/g, '/');
 					if (console[REMAP_FUNC]) {
 						file = console[REMAP_FUNC](file);
 					}
-					const column = matches.length >= 5 ? matches[4] : '0';
-					const lineNumber = matches[2];
+					const column = matches.length >= 6 ? matches[6] : '';
+					const lineNumber = matches.length >= 4 ? matches[4] : '1';
 					const path = `${workspace}/${file}`.replace(/\/\//g, '/');
-					line = line.replace(/\s\(/, ` (<a href="${path}" line="${lineNumber}" column="${column}">`);
-					line = line.replace(/\)$/, ' </a>)');
-					line = line.replace(matches[1], file);
+					const pos = `:${lineNumber}${column ? ':' + column : ''}`;
+
+					const href = `<a href="${path}" line="${lineNumber}" column="${column}">${matches[2]}${pos}</a>`;
+					line = line.replace(`${matches[2]}${pos}`, href);
+					line = line.replace(matches[2], file);
 				}
 			}
 			message += line;

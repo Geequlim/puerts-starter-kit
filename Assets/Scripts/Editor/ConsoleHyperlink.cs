@@ -2,8 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using NUnit.Framework.Constraints;
-using Unity.CodeEditor;
 using System.Diagnostics;
 
 namespace UnityEditor.Console
@@ -97,7 +95,8 @@ namespace UnityEditor.Console
 			{
 				int.TryParse(line, out var _line);
 				int.TryParse(column, out var _column);
-				if (!OpenFileInIDE(path, _line, _column)) {
+				if (!OpenFileInIDE(path, _line, _column))
+				{
 					var ext = Path.GetExtension(path).Replace(".", "");
 					UnityEngine.Debug.LogWarning($"无法打开文件{path}，请检查 Preferences > External Tools > extensions handled 配置中是否包含 {ext}");
 				}

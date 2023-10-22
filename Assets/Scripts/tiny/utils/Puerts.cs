@@ -6,5 +6,10 @@ namespace tiny
 		{
 			return new Puerts.ArrayBuffer(bytes);
 		}
+
+		public static byte[] Buffer2Bytes(Puerts.ArrayBuffer buffer)
+		{
+			return buffer.Bytes;
+		}
 	}
 }

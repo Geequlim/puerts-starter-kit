@@ -22,6 +22,9 @@ const fs = {
 };
 
 const path = {
+	join(...parts) {
+		return parts.join('/');
+	},
 	dirname(path) {
 		return csharp.System.IO.Path.GetDirectoryName(path).replace(/\\/g, "/");
 	},
@@ -38,4 +41,5 @@ Object.defineProperty(globalThis, 'polyfill:csharp', { value: globalThis.CS, enu
 Object.defineProperty(globalThis, 'polyfill:puerts', { value: globalThis.puer, enumerable: true, configurable: false, writable: false });
 Object.defineProperty(globalThis, 'polyfill:fs', { value: fs, enumerable: true, configurable: false, writable: false });
 Object.defineProperty(globalThis, 'polyfill:path', { value: path, enumerable: true, configurable: false, writable: false });
-globalThis.process = typeof process === 'object' ? process : { platform: CS.UnityEngine.Application.platform };
+globalThis.process = typeof process === 'object' ? process : { platform: csharp.UnityEngine.Application.platform };
+if (typeof launchAt === 'undefined') globalThis.launchAt = Date.now();
